@@ -4,10 +4,10 @@ public abstract class Pessoa {
 
     private Integer id;
     private String nome;
-    private Integer cpf;
+    private String cpf;
     private String email;
 
-    public Pessoa(Integer id, String nome, Integer cpf, String email) {
+    public Pessoa(Integer id, String nome, String cpf, String email) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
@@ -30,11 +30,11 @@ public abstract class Pessoa {
         this.nome = nome;
     }
 
-    public Integer getCpf() {
+    public String getCpf() {
         return cpf;
     }
 
-    public void setCpf(Integer cpf) {
+    public void setCpf(String cpf) {
         this.cpf = cpf;
     }
 
