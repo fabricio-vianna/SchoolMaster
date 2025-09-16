@@ -1,20 +1,20 @@
 package entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Professor extends Pessoa {
 
     private String especialidade;
-    private List<Disciplina> listaDisciplinas;
+    private List<Disciplina> listaDisciplinas = new ArrayList<>();
 
     public Professor(Integer id, String nome, String cpf, String email) {
         super(id, nome, cpf, email);
     }
 
-    public Professor(Integer id, String nome, String cpf, String email, String especialidade, Disciplina listaDisciplinas) {
+    public Professor(Integer id, String nome, String cpf, String email, String especialidade) {
         super(id, nome, cpf, email);
         this.especialidade = especialidade;
-        this.listaDisciplinas = listaDisciplinas;
     }
 
     public String getEspecialidade() {
@@ -27,10 +27,6 @@ public class Professor extends Pessoa {
 
     public List<Disciplina> getListaDisciplinas() {
         return listaDisciplinas;
-    }
-
-    public void setListaDisciplinas(List<Disciplina> listaDisciplinas) {
-        this.listaDisciplinas = listaDisciplinas;
     }
 
     public void atribuirDisciplina(Disciplina disciplina) {
