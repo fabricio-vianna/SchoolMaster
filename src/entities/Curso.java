@@ -8,12 +8,12 @@ public class Curso {
     private Integer id;
     private String nome;
 
-    List<Disciplina> listaDisciplinas = new ArrayList<>();
-    List<Aluno> listaAlunos = new ArrayList<>();
+    private List<Disciplina> listaDisciplinas = new ArrayList<>();
+    private List<Aluno> listaAlunos = new ArrayList<>();
 
-    public Curso(String nome, Integer id) {
-        this.nome = nome;
+    public Curso(Integer id, String nome) {
         this.id = id;
+        this.nome = nome;
     }
 
     public Integer getId() {
@@ -41,11 +41,23 @@ public class Curso {
     }
 
     public void adicionarDisciplina(Disciplina disciplina) {
-        listaDisciplinas.add(disciplina);
+        if (!listaDisciplinas.contains(disciplina)) {
+            listaDisciplinas.add(disciplina);
+        }
+    }
+
+    public void removerDisciplina(Disciplina disciplina) {
+        listaDisciplinas.remove(disciplina);
     }
 
     public void adicionarAluno(Aluno aluno) {
-        listaAlunos.add(aluno);
+        if (!listaAlunos.contains(aluno)) {
+            listaAlunos.add(aluno);
+        }
+    }
+
+    public void removerAluno(Aluno aluno) {
+        listaAlunos.remove(aluno);
     }
 
     public List<Aluno> listarAlunos() {
