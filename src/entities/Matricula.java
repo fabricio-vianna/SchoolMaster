@@ -8,6 +8,7 @@ public class Matricula {
     private Aluno aluno;
     private Curso curso;
     private LocalDate dataMatricula;
+    private boolean ativa;
 
     public Matricula(Integer id, Aluno aluno, Curso curso, LocalDate dataMatricula) {
         this.id = id;
@@ -48,11 +49,15 @@ public class Matricula {
         this.dataMatricula = dataMatricula;
     }
 
-    public void confirmarMatricula(){
-        System.out.println("Matrícula confirmada para o aluno: " + aluno.getNome());
+    public void confirmarMatricula() {
+        this.ativa = true;
     }
 
-    public void canclearmatricula() {
-        System.out.println("matrícula cancelada para o aluno: " + curso.getNome());
+    public void cancelarMatricula() {
+        this.ativa = false;
+    }
+
+    public boolean isAtiva() {
+        return ativa;
     }
 }
