@@ -63,4 +63,14 @@ public class Avaliacao {
     public void registrarFrequencia(Integer frequencia) {
         this.frequencia = frequencia;
     }
+
+    @Override
+    public String toString() {
+        return "Avaliacao { " +
+                "aluno: " + aluno.getNome() +
+                ", matrícula: " + aluno.getMatricula() +
+                ", disciplina: " + disciplina +
+                ", nota: " + nota +
+                '}';
+    }
 }

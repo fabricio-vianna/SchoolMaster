@@ -2,6 +2,7 @@ package entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Aluno extends Pessoa {
 
@@ -30,19 +31,27 @@ public class Aluno extends Pessoa {
         return curso;
     }
 
-    public void setCurso(Curso curso) {
-        this.curso = curso;
-    }
-
     public List<Avaliacao> consultarBoletim() {
         List<Avaliacao> boletim = new ArrayList<>();
-        for(Disciplina d : curso.getListaDisciplinas()) {
-            boletim.addAll(d.getListaAvaliacoes().stream().filter(a -> a.getAluno().equals(this)).toList());
+        for (Disciplina d : curso.getListaDisciplinas()) {
+            boletim.addAll(d.getListaAvaliacoes().stream().filter(a -> a.getAluno().equals(this)).collect(Collectors.toList()));
         }
         return boletim;
     }
 
     public List<Disciplina> listarDisciplinas() {
         return curso.getListaDisciplinas();
+    }
+
+    @Override
+    public String toString() {
+        return "Aluno { " +
+                "id: " + getId() +
+                ", nome: '" + getNome() + '\'' +
+                ", cpf: " + getCpf() +
+                ", email: '" + getEmail() + '\'' +
+                ", matricula: '" + matricula + '\'' +
+                ", curso: " + (curso != null ? curso.getNome() : "Sem curso") +
+                '}';
     }
 }
