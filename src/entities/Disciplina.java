@@ -1,5 +1,6 @@
 package entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Disciplina {
@@ -7,14 +8,16 @@ public class Disciplina {
     private Integer id;
     private String nome;
     private Integer cargaHoraria;
-    private Professor professorResponsavel;
+    private Professor professor;
     private List<Avaliacao> listaAvaliacoes;
 
-    public Disciplina(Integer id, String nome, Integer cargaHoraria, Professor professorResponsavel) {
+    public Disciplina(Integer id, String nome, Integer cargaHoraria, Professor professor) {
         this.id = id;
         this.nome = nome;
         this.cargaHoraria = cargaHoraria;
-        this.professorResponsavel = professorResponsavel;
+        this.professor = professor;
+
+        this.listaAvaliacoes = new ArrayList<>();
     }
 
     public Integer getId() {
@@ -41,27 +44,31 @@ public class Disciplina {
         this.cargaHoraria = cargaHoraria;
     }
 
-    public Professor getProfessorResponsavel() {
-        return professorResponsavel;
+    public Professor getProfessor() {
+        return professor;
     }
 
-    public void setProfessorResponsavel(Professor professorResponsavel) {
-        this.professorResponsavel = professorResponsavel;
+    public void setProfessor(Professor professor) {
+        this.professor = professor;
     }
 
     public List<Avaliacao> getListaAvaliacoes() {
         return listaAvaliacoes;
     }
 
-    public void atribuirProfessor(Professor professor) {
-        this.professorResponsavel = professor;
-    }
-
     public void registrarAvaliacao(Avaliacao avaliacao) {
-        listaAvaliacoes.add(avaliacao);
+        if (!listaAvaliacoes.contains(avaliacao)) {
+            listaAvaliacoes.add(avaliacao);
+        }
     }
 
     public List<Avaliacao> listarNotas() {
         return listaAvaliacoes;
+    }
+
+
+    @Override
+    public String toString() {
+        return nome;
     }
 }
