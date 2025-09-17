@@ -2,6 +2,7 @@
 
 # IntelliJ IDEA
 .idea/
+*.iml
 
 # Eclipse
 .settings/
@@ -19,6 +20,14 @@ out/
 bin/
 nbbuild/
 dist/
+target/         # Para Maven
+build/          # Para Gradle
+
+# Arquivos temporários e de cache
+*.log           # Arquivos de log
+*.swp           # Arquivos temporários do Vim
+*.bak           # Arquivos de backup
+*.tmp           # Arquivos temporários
 
 # Arquivos e pastas específicos de cada IDE
 .apt_generated
@@ -26,5 +35,8 @@ dist/
 .springBeans
 .sts4-cache
 /nbproject/private/
-/nbdist/
-/.nb-gradle/
+nbdist/
+.nb-gradle/
+
+# Arquivos de configuração do sistema
+*.swp
