@@ -10,6 +10,7 @@ public class Curso {
 
     private List<Disciplina> listaDisciplinas = new ArrayList<>();
     private List<Aluno> listaAlunos = new ArrayList<>();
+    private List<Professor> listaProfessor = new ArrayList<>();
 
     public Curso(Integer id, String nome) {
         this.id = id;
@@ -62,5 +63,23 @@ public class Curso {
 
     public List<Aluno> listarAlunos() {
         return listaAlunos;
+    }
+
+    public List<Professor> getListaProfessor() {
+        return listaProfessor;
+    }
+
+    public void adicionarProfessor(Professor professor) {
+        if (!listaProfessor.contains(professor)) {
+            listaProfessor.add(professor);
+        }
+    }
+
+    public void removerProfessor(Professor professor) {
+        listaProfessor.remove(professor);
+    }
+
+    public List<Professor> listarProfessor() {
+        return listaProfessor;
     }
 }
