@@ -1,6 +1,5 @@
 package entities;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,12 +30,20 @@ public class Aluno extends Pessoa {
         return curso;
     }
 
-    public List<Avaliacao> consultarBoletim() {
-        List<Avaliacao> boletim = new ArrayList<>();
+    public String consultarBoletim() {
+        StringBuilder boletim = new StringBuilder();
         for (Disciplina d : curso.getListaDisciplinas()) {
-            boletim.addAll(d.getListaAvaliacoes().stream().filter(a -> a.getAluno().equals(this)).collect(Collectors.toList()));
+            List<Avaliacao> avaliacoes = d.getListaAvaliacoes().stream()
+                    .filter(a -> a.getAluno().equals(this))
+                    .collect(Collectors.toList());
+            if (!avaliacoes.isEmpty()) {
+                boletim.append("Disciplina: ").append(d.getNome()).append("\n");
+                for (Avaliacao avaliacao : avaliacoes) {
+                    boletim.append(avaliacao.toString()).append("\n");
+                }
+            }
         }
-        return boletim;
+        return boletim.toString();
     }
 
     public List<Disciplina> listarDisciplinas() {
