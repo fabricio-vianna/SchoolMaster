@@ -80,14 +80,10 @@ public class Avaliacao {
 
     @Override
     public String toString() {
-        String nomeAluno = (aluno != null && aluno.getNome() != null) ? aluno.getNome() : "Desconhecido";
-        String matriculaAluno = (aluno != null && aluno.getMatricula() != null) ? aluno.getMatricula() : "Sem matrícula";
-
-        return "Avaliacao { " +
-                "aluno: " + nomeAluno +
-                ", matrícula: " + matriculaAluno +
-                ", disciplina: " + disciplina +
-                ", nota: " + nota +
-                '}';
+        return "Disciplina: " + disciplina.getNome() + "\n" +
+                "Nota: " + String.format("%.1f", nota) + "\n" +
+                "Frequência: " + frequencia + "%" +
+                "Nome do aluno: " + (aluno != null && aluno.getNome() != null ? aluno.getNome() : "Desconhecido" + "\n") +
+                "Matrícula: " + (aluno != null && aluno.getMatricula() != null ? aluno.getMatricula() : "Sem matrícula");
     }
 }
