@@ -1,29 +1,30 @@
-### IntelliJ IDEA ###
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+# Diretórios gerados por IDEs e ferramentas de build
 
-### Eclipse ###
-.apt_generated
+# IntelliJ IDEA
+.idea/
+
+# Eclipse
+.settings/
 .classpath
-.factorypath
 .project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
+# VS Code
 .vscode/
 
-### Mac OS ###
+# Mac OS
 .DS_Store
+
+# Diretórios de build
+out/
+bin/
+nbbuild/
+dist/
+
+# Arquivos e pastas específicos de cada IDE
+.apt_generated
+.factorypath
+.springBeans
+.sts4-cache
+/nbproject/private/
+/nbdist/
+/.nb-gradle/
