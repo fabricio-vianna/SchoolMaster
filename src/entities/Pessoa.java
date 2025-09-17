@@ -9,7 +9,7 @@ public abstract class Pessoa {
     private String cpf;
     private String email;
 
-    public Pessoa(Integer id, String nome, String cpf, String email) {
+    protected Pessoa(Integer id, String nome, String cpf, String email) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
@@ -53,12 +53,12 @@ public abstract class Pessoa {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Pessoa pessoa = (Pessoa) o;
-        return Objects.equals(cpf, pessoa.cpf);
+        return Objects.equals(id, pessoa.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(cpf);
+        return Objects.hashCode(id);
     }
 
     @Override
