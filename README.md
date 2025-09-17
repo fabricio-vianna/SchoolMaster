@@ -60,7 +60,7 @@ O sistema é composto pelas seguintes entidades principais:
 Clone este repositório:
 
 ```bash
-git clone https://github.com/usuario/projeto.git
+git clone https://github.com/fabricio-vianna/SchoolMaster.git
 ```
 
 Compile o projeto utilizando o Maven ou Gradle (dependendo de sua preferência) ou diretamente via javac:
