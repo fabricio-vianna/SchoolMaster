@@ -32,17 +32,29 @@ public class Aluno extends Pessoa {
 
     public String consultarBoletim() {
         StringBuilder boletim = new StringBuilder();
+
+        boletim.append("Boletim de ").append(this.getNome()).append("\n");
+        boletim.append("Matrícula: ").append(this.getMatricula()).append("\n");
+        boletim.append("--------------------------------------------------\n");
+
         for (Disciplina d : curso.getListaDisciplinas()) {
             List<Avaliacao> avaliacoes = d.getListaAvaliacoes().stream()
                     .filter(a -> a.getAluno().equals(this))
                     .collect(Collectors.toList());
+
             if (!avaliacoes.isEmpty()) {
                 boletim.append("Disciplina: ").append(d.getNome()).append("\n");
+                boletim.append("Carga Horária: ").append(d.getCargaHoraria()).append(" horas\n");
+
                 for (Avaliacao avaliacao : avaliacoes) {
-                    boletim.append(avaliacao.toString()).append("\n");
+                    boletim.append("Nota: ").append(avaliacao.getNota()).append("\n");
+                    boletim.append("Frequência: ").append(avaliacao.getFrequencia()).append("%\n");
                 }
+
+                boletim.append("--------------------------------------------------\n");
             }
         }
+
         return boletim.toString();
     }
 
