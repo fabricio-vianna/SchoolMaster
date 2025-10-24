@@ -3,11 +3,11 @@ package services;
 import java.util.ArrayList;
 import java.util.List;
 
-import entities.Aluno;
-import entities.Avaliacao;
-import entities.Curso;
-import entities.Disciplina;
-import entities.Professor;
+import model.entities.Aluno;
+import model.entities.Avaliacao;
+import model.entities.Curso;
+import model.entities.Disciplina;
+import model.entities.Professor;
 
 public class CursoService {
 
