@@ -39,7 +39,7 @@ Representa a matrícula de um aluno em um curso, com a possibilidade de confirma
 ### CursoService
 Serviço responsável por realizar operações como criação de cursos, cadastro de professores, alunos e disciplinas, e registro de avaliações.
 
-### Main
+### Program
 Classe de execução principal que integra as funcionalidades do sistema, realizando o fluxo de cadastro de curso, professor, aluno e avaliação.
 
 ## Diagrama das Entidades
@@ -66,13 +66,13 @@ git clone https://github.com/fabricio-vianna/SchoolMaster.git
 Compile o projeto utilizando o Maven ou Gradle (dependendo de sua preferência) ou diretamente via javac:
 
 ```bash
-javac application/Main.java
+javac application/Program.java
 ```
 
 Execute o programa:
 
 ```bash
-java application.Main
+java application.Program
 ```
 
 Siga as instruções no console para cadastrar cursos, professores, alunos e realizar avaliações.
