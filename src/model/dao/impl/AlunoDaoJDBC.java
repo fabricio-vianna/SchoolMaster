@@ -95,7 +95,50 @@ public class AlunoDaoJDBC implements AlunoDao {
 
     @Override
     public void deleteByID(Integer id) {
+        PreparedStatement stPessoa = null;
+        PreparedStatement stAluno = null;
 
+        try {
+            conn.setAutoCommit(false);
+
+            stAluno = conn.prepareStatement(
+                    "DELETE FROM aluno "
+                            + "WHERE "
+                            + "id = ?");
+
+            stAluno.setInt(1, id);
+            stAluno.executeUpdate();
+
+            stPessoa = conn.prepareStatement(
+                    "DELETE FROM pessoa "
+                            + "WHERE "
+                            + "id = ?");
+
+            stPessoa.setInt(1, id);
+
+            int rowsAffected = stPessoa.executeUpdate();
+
+            if (rowsAffected == 0) {
+                throw new DbException("Id inválido ou já deletado");
+            }
+
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+                throw new DbException("Transação revertida! Erro: " + e.getMessage());
+            } catch (SQLException e1) {
+                throw new DbException("Erro ao tentar reverter transação! " + e1.getMessage());
+            }
+        } finally {
+            DB.closeStatement(stPessoa);
+            DB.closeStatement(stAluno);
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
