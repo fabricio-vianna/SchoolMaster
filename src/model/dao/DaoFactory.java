@@ -1,6 +1,12 @@
 package model.dao;
 
 import db.DB;
+import model.dao.impl.AlunoDaoJDBC;
+import model.dao.impl.AvaliacaoDaoJDBC;
+import model.dao.impl.CursoDaoJDBC;
+import model.dao.impl.DisciplinaDaoJDBC;
+import model.dao.impl.MatriculaDaoJDBC;
+import model.dao.impl.ProfessorDaoJDBC;
 import model.entities.Disciplina;
 import model.entities.Professor;
 
