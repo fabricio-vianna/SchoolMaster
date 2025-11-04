@@ -7,8 +7,6 @@ import model.dao.impl.CursoDaoJDBC;
 import model.dao.impl.DisciplinaDaoJDBC;
 import model.dao.impl.MatriculaDaoJDBC;
 import model.dao.impl.ProfessorDaoJDBC;
-import model.entities.Disciplina;
-import model.entities.Professor;
 
 public class DaoFactory {
 
@@ -24,7 +22,7 @@ public class DaoFactory {
         return new CursoDaoJDBC(DB.getConnection());
     }
 
-    public static Disciplina createDisciplinaDao() {
+    public static DisciplinaDaoJDBC createDisciplinaDao() {
         return new DisciplinaDaoJDBC(DB.getConnection());
     }
 
@@ -32,7 +30,7 @@ public class DaoFactory {
         return new MatriculaDaoJDBC(DB.getConnection());
     }
 
-    public static Professor createProfessorDao() {
+    public static ProfessorDaoJDBC createProfessorDao() {
         return new ProfessorDaoJDBC(DB.getConnection());
     }
 }
