@@ -36,7 +36,7 @@ public class DB {
         }
     }
 
-    private static void closeConnection() {
+    public static void closeConnection() {
         if (conn != null) {
             try {
                 conn.close();
@@ -46,7 +46,7 @@ public class DB {
         }
     }
 
-    private static void closeStatement(Statement st) {
+    public static void closeStatement(Statement st) {
         if (st != null) {
             try {
                 st.close();
@@ -56,7 +56,7 @@ public class DB {
         }
     }
 
-    private static void closeResultSet(ResultSet rs) {
+    public static void closeResultSet(ResultSet rs) {
         if (rs != null) {
             try {
                 rs.close();
