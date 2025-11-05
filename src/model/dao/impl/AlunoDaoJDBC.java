@@ -91,7 +91,52 @@ public class AlunoDaoJDBC implements AlunoDao {
 
     @Override
     public void update(Aluno obj) {
+        PreparedStatement stPessoa = null;
+        PreparedStatement stAluno = null;
 
+        try {
+            conn.setAutoCommit(false);
+
+            stPessoa = conn.prepareStatement(
+                    "UPDATE pessoa "
+                            + "SET nome = ?, cpf = ?, email = ? "
+                            + "WHERE id = ?");
+
+            stPessoa.setString(1, obj.getNome());
+            stPessoa.setString(2, obj.getCpf());
+            stPessoa.setString(3, obj.getEmail());
+            stPessoa.setInt(4, obj.getId());
+
+            stPessoa.executeUpdate();
+
+            stAluno = conn.prepareStatement(
+                    "UPDATE aluno "
+                            + "SET matricula = ?, id_curso = ? "
+                            + "WHERE id = ?");
+
+            stAluno.setString(1, obj.getMatricula());
+            stAluno.setInt(2, obj.getCurso().getId());
+            stAluno.setInt(3, obj.getId());
+
+            stAluno.executeUpdate();
+
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+                throw new DbException("Transação revertida! Erro: + e.getMessage()");
+            } catch (SQLException e1) {
+                throw new RuntimeException("Erro ao tentar reverter transação! " + e1.getMessage());
+            }
+        } finally {
+            DB.closeStatement(stPessoa);
+            DB.closeStatement(stAluno);
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
