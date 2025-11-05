@@ -9,6 +9,9 @@ public abstract class Pessoa {
     private String cpf;
     private String email;
 
+    public Pessoa() {
+    }
+
     protected Pessoa(Integer id, String nome, String cpf, String email) {
         this.id = id;
         this.nome = nome;

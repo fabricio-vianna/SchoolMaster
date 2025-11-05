@@ -17,6 +17,9 @@ public class Curso {
         this.nome = nome;
     }
 
+    public Curso() {
+    }
+
     public Integer getId() {
         return id;
     }
