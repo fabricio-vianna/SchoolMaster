@@ -93,7 +93,33 @@ public class CursoDaoJDBC implements CursoDao {
 
     @Override
     public Curso findById(Integer id) {
-        return null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "c.id AS cursoID, "
+                            + "c.nome AS cursoNome "
+                            + "FROM curso c "
+                            + "WHERE c.id = ?");
+
+            st.setInt(1, id);
+
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                Curso curso = instantiateCurso(rs);
+                return curso;
+            }
+            return null;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar curso por ID: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
@@ -109,5 +135,14 @@ public class CursoDaoJDBC implements CursoDao {
     @Override
     public List<Professor> findAll() {
         return List.of();
+    }
+
+    private Curso instantiateCurso(ResultSet rs) throws SQLException {
+        Curso curso = new Curso();
+
+        curso.setId(rs.getInt("cursoID"));
+        curso.setNome(rs.getString("cursoNome"));
+
+        return curso;
     }
 }
