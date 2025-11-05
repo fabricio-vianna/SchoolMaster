@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import db.DB;
@@ -123,6 +124,7 @@ public class AlunoDaoJDBC implements AlunoDao {
             }
 
             conn.commit();
+
         } catch (SQLException e) {
             try {
                 conn.rollback();
@@ -174,7 +176,7 @@ public class AlunoDaoJDBC implements AlunoDao {
             return null;
 
         } catch (SQLException e) {
-            throw new DbException("Erro ao buscar aluno: " + e.getMessage());
+            throw new DbException("Erro ao buscar aluno por ID: " + e.getMessage());
         } finally {
             DB.closeStatement(st);
             DB.closeResultSet(rs);
@@ -182,9 +184,46 @@ public class AlunoDaoJDBC implements AlunoDao {
     }
 
     @Override
-    public Aluno findByCurso(Curso curso) {
+    public List<Aluno> findByCurso(Curso curso) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        List<Aluno> alunos = new ArrayList<>();
 
-        return null;
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "a.id AS alunoID, "
+                            + "a.matricula, "
+                            + "p.id AS pessoaID, "
+                            + "p.nome AS pessoaNome, "
+                            + "p.cpf, "
+                            + "p.email, "
+                            + "c.id AS cursoID, "
+                            + "c.nome AS cursoNome "
+                            + "FROM aluno a "
+                            + "INNER JOIN pessoa p ON p.id = a.id "
+                            + "INNER JOIN curso c ON c.id = a.id_curso "
+                            + "WHERE c.id = ? "
+                            + "ORDER BY p.nome");
+
+            st.setInt(1, curso.getId());
+
+            rs = st.executeQuery();
+
+            while (rs.next()) {
+                Curso c = instantiateCurso(rs);
+                Aluno aluno = instantiateAluno(rs, c);
+                alunos.add(aluno);
+            }
+
+            return alunos;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar alunos por curso: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
