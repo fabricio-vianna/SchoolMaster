@@ -1,19 +1,65 @@
 package model.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
+import db.DB;
+import db.DbException;
 import model.dao.CursoDao;
-import model.entities.Aluno;
+import model.entities.Curso;
 import model.entities.Professor;
 
 public class CursoDaoJDBC implements CursoDao {
-    @Override
-    public void insert(Aluno obj) {
-        
+
+    private Connection conn;
+
+    public CursoDaoJDBC(Connection conn) {
+        this.conn = conn;
     }
 
     @Override
-    public void update(Aluno obj) {
+    public void insert(Curso obj) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "INSERT INTO curso "
+                            + "(nome) "
+                            + "VALUES "
+                            + "(?)",
+                    Statement.RETURN_GENERATED_KEYS);
+
+            st.setString(1, obj.getNome());
+
+            int rowsAffected = st.executeUpdate();
+
+            if (rowsAffected == 0) {
+                throw new DbException("Falha ao inserir curso, nenhuma linha afetada.");
+            }
+
+            rs = st.getGeneratedKeys();
+
+            if (rs.next()) {
+                int id = rs.getInt(1);
+            } else {
+                throw new DbException("Falha ao inserir curso, nenhum ID obtido.");
+            }
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao tentar reverter transação! " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
+    }
+
+    @Override
+    public void update(Curso obj) {
 
     }
 
@@ -23,18 +69,18 @@ public class CursoDaoJDBC implements CursoDao {
     }
 
     @Override
-    public void findById(Integer id) {
-
+    public Curso findById(Integer id) {
+        return null;
     }
 
     @Override
-    public void findByNome(String nome) {
-
+    public Curso findByNome(String nome) {
+        return null;
     }
 
     @Override
-    public void findWithDisciplinas(Integer id) {
-
+    public Curso findWithDisciplinas(Integer id) {
+        return null;
     }
 
     @Override
