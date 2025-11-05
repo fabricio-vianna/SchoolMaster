@@ -8,6 +8,10 @@ public class Aluno extends Pessoa {
     private String matricula;
     private Curso curso;
 
+    public Aluno() {
+        super();
+    }
+
     public Aluno(Integer id, String nome, String cpf, String email) {
         super(id, nome, cpf, email);
     }
@@ -28,6 +32,10 @@ public class Aluno extends Pessoa {
 
     public Curso getCurso() {
         return curso;
+    }
+
+    public void setCurso(Curso curso) {
+        this.curso = curso;
     }
 
     public String consultarBoletim() {
