@@ -65,7 +65,30 @@ public class CursoDaoJDBC implements CursoDao {
 
     @Override
     public void deleteByID(Integer id) {
+        PreparedStatement st = null;
 
+        try {
+            conn.setAutoCommit(false);
+
+            st = conn.prepareStatement(
+                    "DELETE FROM curso "
+                            + "WHERE "
+                            + "id = ?");
+
+            st.setInt(1, id);
+            st.executeUpdate();
+
+            int rowsAffected = st.executeUpdate();
+
+            if (rowsAffected == 0) {
+                throw new DbException("Id inválido ou já deletado");
+            }
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao tentar deletar curso! " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+        }
     }
 
     @Override
