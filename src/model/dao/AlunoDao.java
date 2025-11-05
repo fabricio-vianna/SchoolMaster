@@ -13,11 +13,11 @@ public interface AlunoDao {
 
     void deleteByID(Integer id);
 
-    void findById(Integer id);
+    Aluno findById(Integer id);
 
-    void findByCurso(Curso curso);
+    Aluno findByCurso(Curso curso);
 
-    void findByNome(String nome);
+    Aluno findByNome(String nome);
 
     List<Aluno> findAll();
 }
