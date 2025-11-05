@@ -2,22 +2,22 @@ package model.dao;
 
 import java.util.List;
 
-import model.entities.Aluno;
+import model.entities.Curso;
 import model.entities.Professor;
 
 public interface CursoDao {
 
-    void insert(Aluno obj);
+    void insert(Curso obj);
 
-    void update(Aluno obj);
+    void update(Curso obj);
 
     void deleteByID(Integer id);
 
-    void findById(Integer id);
+    Curso findById(Integer id);
 
-    void findByNome(String nome);
+    Curso findByNome(String nome);
 
-    void findWithDisciplinas(Integer id);
+    Curso findWithDisciplinas(Integer id);
 
     List<Professor> findAll();
 }
