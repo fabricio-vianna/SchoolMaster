@@ -85,4 +85,15 @@ public class Curso {
     public List<Professor> listarProfessor() {
         return listaProfessor;
     }
+
+    @Override
+    public String toString() {
+        return "Curso{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", listaDisciplinas=" + listaDisciplinas +
+                ", listaAlunos=" + listaAlunos +
+                ", listaProfessor=" + listaProfessor +
+                '}';
+    }
 }
