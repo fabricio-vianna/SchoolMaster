@@ -2,15 +2,14 @@ package model.dao;
 
 import java.util.List;
 
-import model.entities.Aluno;
 import model.entities.Disciplina;
 import model.entities.Professor;
 
 public interface ProfessorDao {
 
-    void insert(Aluno obj);
+    void insert(Professor obj);
 
-    void update(Aluno obj);
+    void update(Professor obj);
 
     void deleteByID(Integer id);
 
