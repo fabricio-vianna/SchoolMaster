@@ -227,9 +227,45 @@ public class AlunoDaoJDBC implements AlunoDao {
     }
 
     @Override
-    public Aluno findByNome(String nome) {
+    public List<Aluno> findByNome(String nome) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        List<Aluno> alunos = new ArrayList<>();
 
-        return null;
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "a.id AS alunoID, "
+                            + "a.matricula, "
+                            + "p.id AS pessoaID, "
+                            + "p.nome AS pessoaNome, "
+                            + "p.cpf, "
+                            + "p.email, "
+                            + "c.id AS cursoID, "
+                            + "c.nome AS cursoNome "
+                            + "FROM aluno a "
+                            + "INNER JOIN pessoa p ON p.id = a.id "
+                            + "INNER JOIN curso c ON c.id = a.id_curso "
+                            + "WHERE p.nome = ?");
+
+            st.setString(1, nome);
+
+            rs = st.executeQuery();
+
+            while (rs.next()) {
+                Curso curso = instantiateCurso(rs);
+                Aluno aluno = instantiateAluno(rs, curso);
+                alunos.add(aluno);
+            }
+
+            return alunos;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar aluno por nome: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
