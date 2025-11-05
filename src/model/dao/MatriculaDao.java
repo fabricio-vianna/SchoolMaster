@@ -4,23 +4,23 @@ import java.util.List;
 
 import model.entities.Aluno;
 import model.entities.Curso;
-import model.entities.Professor;
+import model.entities.Matricula;
 
 public interface MatriculaDao {
 
-    void insert(Aluno obj);
+    void insert(Matricula obj);
 
-    void update(Aluno obj);
+    void update(Matricula obj);
 
     void deleteByID(Integer id);
 
-    void findById(Integer id);
+    Matricula findById(Integer id);
 
-    void findByAluno(Aluno aluno);
+    Matricula findByAluno(Aluno aluno);
 
-    void findByCurso(Curso curso);
+    Matricula findByCurso(Curso curso);
 
     void cancelarMatricula(Integer id);
 
-    List<Professor> findAll();
+    List<Matricula> findAll();
 }
