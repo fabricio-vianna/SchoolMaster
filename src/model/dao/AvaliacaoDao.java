@@ -2,23 +2,23 @@ package model.dao;
 
 import java.util.List;
 
-import model.entities.Aluno;
+import model.entities.Avaliacao;
 import model.entities.Disciplina;
 import model.entities.Professor;
 
 public interface AvaliacaoDao {
 
-    void insert(Aluno obj);
+    void insert(Avaliacao obj);
 
-    void update(Aluno obj);
+    void update(Avaliacao obj);
 
     void deleteByID(Integer id);
 
-    void findById(Integer id);
+    Avaliacao findById(Integer id);
 
-    void findByAluno(Aluno aluno);
+    Avaliacao findByAluno(Avaliacao aluno);
 
-    void findByDisciplina(Disciplina disciplina);
+    Avaliacao findByDisciplina(Disciplina disciplina);
 
     List<Professor> findAll();
 }
