@@ -142,22 +142,81 @@ public class AlunoDaoJDBC implements AlunoDao {
     }
 
     @Override
-    public void findById(Integer id) {
+    public Aluno findById(Integer id) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
 
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "a.id AS alunoID, "
+                            + "a.matricula, "
+                            + "p.id AS pessoaID, "
+                            + "p.nome AS pessoaNome, "
+                            + "p.cpf, "
+                            + "p.email, "
+                            + "c.id AS cursoID, "
+                            + "c.nome AS cursoNome "
+                            + "FROM aluno a "
+                            + "INNER JOIN pessoa p ON p.id = a.id "
+                            + "INNER JOIN curso c ON c.id = a.id_curso "
+                            + "WHERE a.id = ?");
+
+            st.setInt(1, id);
+
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                Curso curso = instantiateCurso(rs);
+                Aluno aluno = instantiateAluno(rs, curso);
+                return aluno;
+            }
+            return null;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar aluno: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
-    public void findByCurso(Curso curso) {
+    public Aluno findByCurso(Curso curso) {
 
+        return null;
     }
 
     @Override
-    public void findByNome(String nome) {
+    public Aluno findByNome(String nome) {
 
+        return null;
     }
 
     @Override
     public List<Aluno> findAll() {
         return List.of();
+    }
+
+    private Aluno instantiateAluno(ResultSet rs, Curso curso) throws SQLException {
+        Aluno aluno = new Aluno();
+
+        aluno.setId(rs.getInt("alunoID"));
+        aluno.setMatricula(rs.getString("matricula"));
+        aluno.setNome(rs.getString("pessoaNome"));
+        aluno.setEmail(rs.getString("email"));
+        aluno.setCpf(rs.getString("cpf"));
+        aluno.setCurso(curso);
+
+        return aluno;
+    }
+
+    private Curso instantiateCurso(ResultSet rs) throws SQLException {
+        Curso curso = new Curso();
+
+        curso.setId(rs.getInt("cursoID"));
+        curso.setNome(rs.getString("cursoNome"));
+
+        return curso;
     }
 }
