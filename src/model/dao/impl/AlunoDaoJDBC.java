@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DB;
 import db.DbException;
@@ -315,7 +317,48 @@ public class AlunoDaoJDBC implements AlunoDao {
 
     @Override
     public List<Aluno> findAll() {
-        return List.of();
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "a.id AS alunoID,  "
+                            + "a.matricula, "
+                            + "p.id AS pessoaID, "
+                            + "p.nome AS pessoaNome, "
+                            + "p.cpf, p.email, "
+                            + "c.id AS cursoID, "
+                            + "c.nome AS cursoNome "
+                            + "FROM aluno a "
+                            + "INNER JOIN pessoa p "
+                            + "ON p.id = a.id "
+                            + "INNER JOIN curso c "
+                            + "ON c.id = a.id_curso");
+
+            rs = st.executeQuery();
+
+            List<Aluno> alunos = new ArrayList<>();
+            Map<Integer, Aluno> map = new HashMap<>();
+
+            while (rs.next()) {
+                Curso curso = new Curso(rs.getInt("cursoID"), rs.getString("cursoNome"));
+                Aluno aluno = map.get(rs.getInt("alunoID"));
+
+                if (aluno == null) {
+                    aluno = instantiateAluno(rs, curso);
+                    map.put(rs.getInt("alunoID"), aluno);
+                    alunos.add(aluno);
+                }
+            }
+
+            return alunos;
+        } catch (SQLException e) {
+            throw new DbException("ERRO AO LISTAR OS ALUNOS: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     private Aluno instantiateAluno(ResultSet rs, Curso curso) throws SQLException {
