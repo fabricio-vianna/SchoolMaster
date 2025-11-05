@@ -15,9 +15,9 @@ public interface AlunoDao {
 
     Aluno findById(Integer id);
 
-    Aluno findByCurso(Curso curso);
+    List<Aluno> findByCurso(Curso curso);
 
-    Aluno findByNome(String nome);
+    List<Aluno> findByNome(String nome);
 
     List<Aluno> findAll();
 }
