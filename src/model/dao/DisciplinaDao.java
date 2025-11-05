@@ -2,23 +2,23 @@ package model.dao;
 
 import java.util.List;
 
-import model.entities.Aluno;
 import model.entities.Curso;
+import model.entities.Disciplina;
 import model.entities.Professor;
 
 public interface DisciplinaDao {
 
-    void insert(Aluno obj);
+    void insert(Disciplina obj);
 
-    void update(Aluno obj);
+    void update(Disciplina obj);
 
     void deleteByID(Integer id);
 
-    void findById(Integer id);
+    Disciplina findById(Integer id);
 
-    void findByCurso(Curso curso);
+    Disciplina findByCurso(Curso curso);
 
-    void findByProfessor(Professor professor);
+    Disciplina findByProfessor(Professor professor);
 
     List<Professor> findAll();
 }
