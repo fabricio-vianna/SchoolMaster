@@ -124,7 +124,33 @@ public class CursoDaoJDBC implements CursoDao {
 
     @Override
     public Curso findByNome(String nome) {
-        return null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "c.id AS cursoID, "
+                            + "c.nome AS cursoNome "
+                            + "FROM curso c "
+                            + "WHERE c.nome = ?");
+
+            st.setString(1, nome);
+
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                Curso curso = instantiateCurso(rs);
+                return curso;
+            }
+            return null;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar curso por nome: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
