@@ -3,7 +3,6 @@ package model.dao;
 import java.util.List;
 
 import model.entities.Curso;
-import model.entities.Professor;
 
 public interface CursoDao {
 
@@ -19,5 +18,5 @@ public interface CursoDao {
 
     Curso findWithDisciplinas(Integer id);
 
-    List<Professor> findAll();
+    List<Curso> findAll();
 }
