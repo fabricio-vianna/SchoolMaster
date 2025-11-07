@@ -5,13 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import db.DB;
 import db.DbException;
 import model.dao.CursoDao;
 import model.entities.Curso;
-import model.entities.Professor;
 
 public class CursoDaoJDBC implements CursoDao {
 
@@ -159,8 +159,33 @@ public class CursoDaoJDBC implements CursoDao {
     }
 
     @Override
-    public List<Professor> findAll() {
-        return List.of();
+    public List<Curso> findAll() {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "c.id AS cursoID, "
+                            + "c.nome AS cursoNome "
+                            + "FROM curso c ");
+
+            rs = st.executeQuery();
+
+            List<Curso> cursos = new ArrayList<>();
+
+            while (rs.next()) {
+                Curso curso = new Curso(rs.getInt("cursoID"), rs.getString("cursoNome"));
+                cursos.add(curso);
+            }
+
+            return cursos;
+        } catch (SQLException e) {
+            throw new DbException("ERRO AO LISTAR OS CURSOS: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     private Curso instantiateCurso(ResultSet rs) throws SQLException {
