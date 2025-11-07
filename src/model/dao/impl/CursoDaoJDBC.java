@@ -60,7 +60,37 @@ public class CursoDaoJDBC implements CursoDao {
 
     @Override
     public void update(Curso obj) {
+        PreparedStatement st = null;
 
+        try {
+            conn.setAutoCommit(false);
+
+            st = conn.prepareStatement(
+                    "UPDATE curso "
+                            + "SET nome = ? "
+                            + "WHERE id = ?");
+
+            st.setString(1, obj.getNome());
+            st.setInt(2, obj.getId());
+
+            st.executeUpdate();
+
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+                throw new DbException("Transação revertida! Erro: " + e.getMessage());
+            } catch (SQLException e1) {
+                throw new RuntimeException("Erro ao tentar reverter transação! " + e1.getMessage());
+            }
+        } finally {
+            DB.closeStatement(st);
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
