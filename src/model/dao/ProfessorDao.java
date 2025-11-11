@@ -13,7 +13,7 @@ public interface ProfessorDao {
 
     void deleteByID(Integer id);
 
-    void findById(Integer id);
+    Professor findById(Integer id);
 
     void findByDisciplina(Disciplina obj);
 
