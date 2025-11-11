@@ -11,6 +11,9 @@ public class Disciplina {
     private Professor professor;
     private List<Avaliacao> listaAvaliacoes;
 
+    public Disciplina() {
+    }
+
     public Disciplina(Integer id, String nome, Integer cargaHoraria, Professor professor) {
         this.id = id;
         this.nome = nome;
