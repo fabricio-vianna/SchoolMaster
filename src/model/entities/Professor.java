@@ -10,6 +10,9 @@ public class Professor extends Pessoa {
 
     private Curso curso;
 
+    public Professor() {
+    }
+
     public Professor(Integer id, String nome, String cpf, String email) {
         super(id, nome, cpf, email);
     }
