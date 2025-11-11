@@ -89,7 +89,51 @@ public class ProfessorDaoJDBC implements ProfessorDao {
 
     @Override
     public void update(Professor obj) {
+        PreparedStatement stPessoa = null;
+        PreparedStatement stProfessor = null;
 
+        try {
+            conn.setAutoCommit(false);
+
+            stPessoa = conn.prepareStatement(
+                    "UPDATE pessoa "
+                            + "SET nome = ?, cpf = ?, email = ? "
+                            + "WHERE id = ?");
+
+            stPessoa.setString(1, obj.getNome());
+            stPessoa.setString(2, obj.getCpf());
+            stPessoa.setString(3, obj.getEmail());
+            stPessoa.setInt(4, obj.getId());
+
+            stPessoa.executeUpdate();
+
+            stProfessor = conn.prepareStatement(
+                    "UPDATE professor "
+                            + "SET especialidade = ? "
+                            + "WHERE id = ?");
+
+            stProfessor.setString(1, obj.getEspecialidade());
+            stProfessor.setInt(2, obj.getId());
+
+            stProfessor.executeUpdate();
+
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+                throw new DbException("Transação revertida! Erro: + e.getMessage()");
+            } catch (SQLException e1) {
+                throw new RuntimeException("Erro ao tentar reverter transação! " + e1.getMessage());
+            }
+        } finally {
+            DB.closeStatement(stPessoa);
+            DB.closeStatement(stProfessor);
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
