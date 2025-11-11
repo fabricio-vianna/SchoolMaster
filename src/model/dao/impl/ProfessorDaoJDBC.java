@@ -138,7 +138,51 @@ public class ProfessorDaoJDBC implements ProfessorDao {
 
     @Override
     public void deleteByID(Integer id) {
+        PreparedStatement stPessoa = null;
+        PreparedStatement stProfessor = null;
 
+        try {
+            conn.setAutoCommit(false);
+
+            stProfessor = conn.prepareStatement(
+                    "DELETE FROM professor "
+                            + "WHERE "
+                            + "id = ?");
+
+            stProfessor.setInt(1, id);
+            stProfessor.executeUpdate();
+
+            stPessoa = conn.prepareStatement(
+                    "DELETE FROM pessoa "
+                            + "WHERE "
+                            + "id = ?");
+
+            stPessoa.setInt(1, id);
+
+            int rowsAffected = stPessoa.executeUpdate();
+
+            if (rowsAffected == 0) {
+                throw new DbException("Id inválido ou já deletado");
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+                throw new DbException("Transação revertida! Erro: " + e.getMessage());
+            } catch (SQLException e1) {
+                throw new DbException("Erro ao tentar reverter transação! " + e1.getMessage());
+            }
+        } finally {
+            DB.closeStatement(stPessoa);
+            DB.closeStatement(stProfessor);
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
