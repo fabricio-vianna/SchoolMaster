@@ -36,6 +36,10 @@ public class Curso {
         this.nome = nome;
     }
 
+    public void setListaDisciplinas(List<Disciplina> listaDisciplinas) {
+        this.listaDisciplinas = listaDisciplinas;
+    }
+
     public List<Disciplina> getListaDisciplinas() {
         return listaDisciplinas;
     }
