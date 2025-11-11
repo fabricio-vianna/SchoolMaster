@@ -12,6 +12,7 @@ import db.DB;
 import db.DbException;
 import model.dao.CursoDao;
 import model.entities.Curso;
+import model.entities.Disciplina;
 
 public class CursoDaoJDBC implements CursoDao {
 
@@ -185,7 +186,52 @@ public class CursoDaoJDBC implements CursoDao {
 
     @Override
     public Curso findWithDisciplinas(Integer id) {
-        return null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT c.id AS cursoID, c.nome AS cursoNome, "
+                            + "d.id AS disciplinaID, d.nome AS disciplinaNome "
+                            + "FROM curso c "
+                            + "INNER JOIN disciplina d "
+                            + "ON c.id = d.id_curso "
+                            + "WHERE c.id = ?");
+
+            st.setInt(1, id);
+            rs = st.executeQuery();
+
+            Curso curso = null;
+            List<Disciplina> disciplinas = new ArrayList<>();
+
+            while (rs.next()) {
+                if (curso == null) {
+                    curso = new Curso();
+                    curso.setId(rs.getInt("cursoID"));
+                    curso.setNome(rs.getString("cursoNome"));
+                }
+
+                int disciplinaID = rs.getInt("disciplinaID");
+
+                if (disciplinaID > 0) {
+                    Disciplina disciplina = new Disciplina();
+                    disciplina.setId(disciplinaID);
+                    disciplina.setNome(rs.getString("disciplinaNome"));
+                    disciplinas.add(disciplina);
+                }
+            }
+
+            if (curso != null) {
+                curso.setListaDisciplinas(disciplinas);
+            }
+
+            return curso;
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar curso com disciplinas: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
