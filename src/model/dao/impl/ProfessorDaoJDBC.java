@@ -186,8 +186,39 @@ public class ProfessorDaoJDBC implements ProfessorDao {
     }
 
     @Override
-    public void findById(Integer id) {
+    public Professor findById(Integer id) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
 
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "prof.id AS professorID, "
+                            + "prof.especialidade, "
+                            + "p.id AS pessoaID, "
+                            + "p.nome AS pessoaNome, "
+                            + "p.cpf, "
+                            + "p.email "
+                            + "FROM professor prof "
+                            + "INNER JOIN pessoa p ON p.id = prof.id "
+                            + "WHERE prof.id = ?");
+
+            st.setInt(1, id);
+
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                Professor professor = instantiateProfessor(rs);
+                return professor;
+            }
+            return null;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar professor por ID: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
@@ -203,5 +234,17 @@ public class ProfessorDaoJDBC implements ProfessorDao {
     @Override
     public List<Professor> findAll() {
         return List.of();
+    }
+
+    private Professor instantiateProfessor(ResultSet rs) throws SQLException {
+        Professor professor = new Professor();
+
+        professor.setId(rs.getInt("professorID"));
+        professor.setEspecialidade(rs.getString("especialidade"));
+        professor.setNome(rs.getString("pessoaNome"));
+        professor.setEmail(rs.getString("email"));
+        professor.setCpf(rs.getString("cpf"));
+
+        return professor;
     }
 }
