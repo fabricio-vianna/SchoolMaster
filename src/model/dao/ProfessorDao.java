@@ -15,7 +15,7 @@ public interface ProfessorDao {
 
     Professor findById(Integer id);
 
-    void findByDisciplina(Disciplina obj);
+    List<Professor> findByDisciplina(Disciplina obj);
 
     void findByEspecialidade(String especialidade);
 
