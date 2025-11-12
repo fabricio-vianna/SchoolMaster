@@ -47,5 +47,14 @@ public class Professor extends Pessoa {
         return curso;
     }
 
-
+    @Override
+    public String toString() {
+        return "Professor{" +
+                "id=" + getId() +
+                ", nome='" + getNome() + '\'' +
+                ", especialidade='" + especialidade + '\'' +
+                ", curso=" + (curso != null ? curso.getNome() : "Nenhum") +
+                ", disciplinas=" + listaDisciplinas.stream().map(Disciplina::getNome).toList() +
+                '}';
+    }
 }
