@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import db.DB;
@@ -222,8 +223,46 @@ public class ProfessorDaoJDBC implements ProfessorDao {
     }
 
     @Override
-    public void findByDisciplina(Disciplina obj) {
+    public List<Professor> findByDisciplina(Disciplina obj) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        List<Professor> professores = new ArrayList<>();
 
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "prof.id AS professorID, "
+                            + "prof.especialidade, "
+                            + "p.id AS pessoaID, "
+                            + "p.nome AS pessoaNome, "
+                            + "p.cpf, "
+                            + "p.email, "
+                            + "d.id AS disciplinaID, "
+                            + "d.nome AS disciplinaNome "
+                            + "FROM professor prof "
+                            + "INNER JOIN pessoa p ON p.id = prof.id "
+                            + "INNER JOIN disciplina d ON d.id_professor = prof.id "
+                            + "WHERE d.id = ? "
+                            + "ORDER BY p.nome");
+
+            st.setInt(1, obj.getId());
+            rs = st.executeQuery();
+
+            while (rs.next()) {
+                Disciplina disciplina = instantiateDisciplina(rs);
+                Professor professor = instantiateProfessor(rs);
+                professor.atribuirDisciplina(disciplina);
+                professores.add(professor);
+            }
+
+            return professores;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar professores por disciplina: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
@@ -246,5 +285,14 @@ public class ProfessorDaoJDBC implements ProfessorDao {
         professor.setCpf(rs.getString("cpf"));
 
         return professor;
+    }
+
+    private Disciplina instantiateDisciplina(ResultSet rs) throws SQLException {
+        Disciplina disciplina = new Disciplina();
+
+        disciplina.setId(rs.getInt("disciplinaID"));
+        disciplina.setNome(rs.getString("disciplinaNome"));
+
+        return disciplina;
     }
 }
