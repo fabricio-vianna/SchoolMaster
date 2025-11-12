@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DB;
 import db.DbException;
@@ -272,7 +274,55 @@ public class ProfessorDaoJDBC implements ProfessorDao {
 
     @Override
     public List<Professor> findAll() {
-        return List.of();
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "prof.id AS professorID,  "
+                            + "prof.especialidade, "
+                            + "p.id AS pessoaID, "
+                            + "p.nome AS pessoaNome, "
+                            + "p.cpf, p.email, "
+                            + "d.id AS disciplinaID, "
+                            + "d.nome AS disciplinaNome, "
+                            + "d.carga_horaria "
+                            + "FROM professor prof "
+                            + "INNER JOIN pessoa p "
+                            + "ON p.id = prof.id "
+                            + "INNER JOIN disciplina d "
+                            + "ON d.id_professor = prof.id");
+
+            rs = st.executeQuery();
+
+            List<Professor> professores = new ArrayList<>();
+            Map<Integer, Professor> map = new HashMap<>();
+
+            while (rs.next()) {
+                int professorID = rs.getInt("professorID");
+                Professor professor = map.get(professorID);
+
+                if (professor == null) {
+                    professor = instantiateProfessor(rs);
+                    map.put(professorID, professor);
+                    professores.add(professor);
+                }
+
+                int disciplinaID = rs.getInt("disciplinaID");
+                if (disciplinaID > 0) {
+                    Disciplina disciplina = instantiateDisciplina(rs);
+                    professor.atribuirDisciplina(disciplina);
+                }
+            }
+
+            return professores;
+        } catch (SQLException e) {
+            throw new DbException("ERRO AO LISTAR OS PROFESSORES: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     private Professor instantiateProfessor(ResultSet rs) throws SQLException {
