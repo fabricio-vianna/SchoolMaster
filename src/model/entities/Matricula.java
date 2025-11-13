@@ -10,11 +10,12 @@ public class Matricula {
     private LocalDate dataMatricula;
     private boolean ativa;
 
-    public Matricula(Integer id, Aluno aluno, Curso curso, LocalDate dataMatricula) {
+    public Matricula(Integer id, Aluno aluno, Curso curso, LocalDate dataMatricula, boolean ativa) {
         this.id = id;
         this.aluno = aluno;
         this.curso = curso;
         this.dataMatricula = dataMatricula;
+        this.ativa = ativa;
     }
 
     public Integer getId() {
