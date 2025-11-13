@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import db.DB;
@@ -129,8 +130,38 @@ public class MatriculaDaoJDBC implements MatriculaDao {
     }
 
     @Override
-    public Matricula findByAluno(Aluno aluno) {
-        return null;
+    public List<Matricula> findByAluno(Aluno aluno) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        List<Matricula> list = new ArrayList<>();
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "id AS matriculaID, "
+                            + "id_aluno, "
+                            + "id_curso, "
+                            + "data_matricula, "
+                            + "ativa "
+                            + "FROM matricula "
+                            + "WHERE id_aluno = ?");
+
+            st.setInt(1, aluno.getId());
+
+            rs = st.executeQuery();
+
+            while (rs.next()) {
+                list.add(instantiateMatricula(rs));
+            }
+            return list;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar matricula por aluno: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
