@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.List;
 
 import db.DB;
@@ -95,7 +96,36 @@ public class MatriculaDaoJDBC implements MatriculaDao {
 
     @Override
     public Matricula findById(Integer id) {
-        return null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "m.id AS matriculaID, "
+                            + "m.id_aluno, "
+                            + "m.id_curso, "
+                            + "m.data_matricula, "
+                            + "m.ativa "
+                            + "FROM matricula m "
+                            + "WHERE m.id = ?");
+
+            st.setInt(1, id);
+
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                Matricula matricula = instantiateMatricula(rs);
+                return matricula;
+            }
+            return null;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar matricula por ID: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
@@ -116,5 +146,19 @@ public class MatriculaDaoJDBC implements MatriculaDao {
     @Override
     public List<Matricula> findAll() {
         return List.of();
+    }
+
+    private Matricula instantiateMatricula(ResultSet rs) throws SQLException {
+        int id = rs.getInt("matriculaID");
+        int idAluno = rs.getInt("id_aluno");
+        int idCurso = rs.getInt("id_curso");
+        LocalDate dataMatricula = rs.getDate("data_matricula").toLocalDate();
+        boolean ativa = rs.getBoolean("ativa");
+
+        Aluno aluno = new AlunoDaoJDBC(conn).findById(idAluno);
+        Curso curso = new CursoDaoJDBC(conn).findById(idCurso);
+
+        Matricula matricula = new Matricula(id, aluno, curso, dataMatricula, ativa);
+        return matricula;
     }
 }
