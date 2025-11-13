@@ -268,8 +268,56 @@ public class ProfessorDaoJDBC implements ProfessorDao {
     }
 
     @Override
-    public void findByEspecialidade(String especialidade) {
+    public List<Professor> findByEspecialidade(String especialidade) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        List<Professor> professores = new ArrayList<>();
 
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "prof.id AS professorID, "
+                            + "prof.especialidade, "
+                            + "p.id AS pessoaID, "
+                            + "p.nome AS pessoaNome, "
+                            + "p.cpf, "
+                            + "p.email, "
+                            + "d.id AS disciplinaID, "
+                            + "d.nome AS disciplinaNome "
+                            + "FROM professor prof "
+                            + "INNER JOIN pessoa p ON p.id = prof.id "
+                            + "INNER JOIN disciplina d ON d.id_professor = prof.id "
+                            + "WHERE prof.especialidade = ? "
+                            + "ORDER BY p.nome");
+
+            st.setString(1, especialidade);
+            rs = st.executeQuery();
+
+            Map<Integer, Professor> map = new HashMap<>();
+
+            while (rs.next()) {
+                int profID = rs.getInt("professorID");
+
+                Professor professor = map.get(profID);
+
+                if (professor == null) {
+                    professor = instantiateProfessor(rs);
+                    map.put(profID, professor);
+                    professores.add(professor);
+                }
+
+                Disciplina disciplina = instantiateDisciplina(rs);
+                professor.atribuirDisciplina(disciplina);
+            }
+
+            return professores;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar professores por especialidade: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
