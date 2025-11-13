@@ -16,7 +16,7 @@ public interface MatriculaDao {
 
     Matricula findById(Integer id);
 
-    Matricula findByAluno(Aluno aluno);
+    List<Matricula> findByAluno(Aluno aluno);
 
     Matricula findByCurso(Curso curso);
 
