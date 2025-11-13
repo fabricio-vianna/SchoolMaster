@@ -64,4 +64,15 @@ public class Matricula {
     public boolean isAtiva() {
         return ativa;
     }
+
+    @Override
+    public String toString() {
+        return "Matricula{" +
+                "id=" + id +
+                ", aluno=" + aluno +
+                ", curso=" + curso +
+                ", dataMatricula=" + dataMatricula +
+                ", ativa=" + ativa +
+                '}';
+    }
 }
