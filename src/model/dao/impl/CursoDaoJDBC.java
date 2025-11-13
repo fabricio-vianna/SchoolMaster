@@ -99,15 +99,12 @@ public class CursoDaoJDBC implements CursoDao {
         PreparedStatement st = null;
 
         try {
-            conn.setAutoCommit(false);
-
             st = conn.prepareStatement(
                     "DELETE FROM curso "
                             + "WHERE "
                             + "id = ?");
 
             st.setInt(1, id);
-            st.executeUpdate();
 
             int rowsAffected = st.executeUpdate();
 
