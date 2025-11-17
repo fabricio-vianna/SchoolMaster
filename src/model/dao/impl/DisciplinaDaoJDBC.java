@@ -68,7 +68,27 @@ public class DisciplinaDaoJDBC implements DisciplinaDao {
 
     @Override
     public void deleteByID(Integer id) {
+        PreparedStatement st = null;
 
+        try {
+            st = conn.prepareStatement(
+                    "DELETE FROM disciplina "
+                            + "WHERE "
+                            + "id = ?");
+
+            st.setInt(1, id);
+
+            int rowsAffected = st.executeUpdate();
+
+            if (rowsAffected == 0) {
+                throw new DbException("Id inválido ou já deletado");
+            }
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao tentar deletar disciplina! " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+        }
     }
 
     @Override
