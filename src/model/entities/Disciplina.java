@@ -9,16 +9,18 @@ public class Disciplina {
     private String nome;
     private Integer cargaHoraria;
     private Professor professor;
+    private Curso curso;
     private List<Avaliacao> listaAvaliacoes;
 
     public Disciplina() {
     }
 
-    public Disciplina(Integer id, String nome, Integer cargaHoraria, Professor professor) {
+    public Disciplina(Integer id, String nome, Integer cargaHoraria, Professor professor, Curso curso) {
         this.id = id;
         this.nome = nome;
         this.cargaHoraria = cargaHoraria;
         this.professor = professor;
+        this.curso = curso;
 
         this.listaAvaliacoes = new ArrayList<>();
     }
@@ -53,6 +55,14 @@ public class Disciplina {
 
     public void setProfessor(Professor professor) {
         this.professor = professor;
+    }
+
+    public Curso getCurso() {
+        return curso;
+    }
+
+    public void setCurso(Curso curso) {
+        this.curso = curso;
     }
 
     public List<Avaliacao> getListaAvaliacoes() {
