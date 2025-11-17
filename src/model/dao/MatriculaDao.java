@@ -18,7 +18,7 @@ public interface MatriculaDao {
 
     List<Matricula> findByAluno(Aluno aluno);
 
-    Matricula findByCurso(Curso curso);
+    List<Matricula> findByCurso(Curso curso);
 
     void cancelarMatricula(Integer id);
 
