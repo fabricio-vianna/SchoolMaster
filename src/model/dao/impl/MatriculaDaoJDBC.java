@@ -67,7 +67,40 @@ public class MatriculaDaoJDBC implements MatriculaDao {
 
     @Override
     public void update(Matricula obj) {
+        PreparedStatement st = null;
 
+        try {
+            conn.setAutoCommit(false);
+
+            st = conn.prepareStatement(
+                    "UPDATE matricula "
+                            + "SET id_aluno = ?, id_curso = ?, data_matricula = ?, ativa = ? " +
+                            "WHERE id = ?");
+
+            st.setInt(1, obj.getAluno().getId());
+            st.setInt(2, obj.getCurso().getId());
+            st.setDate(3, Date.valueOf(obj.getDataMatricula()));
+            st.setBoolean(4, obj.isAtiva());
+            st.setInt(5, obj.getId());
+
+            st.executeUpdate();
+
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+                throw new DbException("Transação revertida! Erro: " + e.getMessage());
+            } catch (SQLException e1) {
+                throw new RuntimeException("Erro ao tentar reverter transação! " + e1.getMessage());
+            }
+        } finally {
+            DB.closeStatement(st);
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
