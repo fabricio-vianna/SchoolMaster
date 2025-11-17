@@ -7,6 +7,7 @@ import model.dao.AlunoDao;
 import model.dao.CursoDao;
 import model.dao.DaoFactory;
 import model.dao.DisciplinaDao;
+import model.dao.ProfessorDao;
 import model.entities.Aluno;
 import model.entities.Avaliacao;
 import model.entities.Curso;
@@ -67,11 +68,15 @@ public class CursoService {
         return aluno;
     }
 
-    public static Professor adicionarProfessorAoCurso(Integer id, String nome, String cpf, String email, String especialidade, Curso curso) {
-        Professor professor = new Professor(id, nome, cpf, email, especialidade, curso);
+    public static Professor adicionarProfessorAoCurso(String nome, String cpf, String email, String especialidade, Curso curso) {
+        Professor professor = new Professor(null, nome, cpf, email, especialidade, curso);
         if (!curso.getListaProfessor().contains(professor)) {
             curso.adicionarProfessor(professor);
         }
+
+        ProfessorDao professorDao = DaoFactory.createProfessorDao();
+        professorDao.insert(professor);
+
         return professor;
     }
 
