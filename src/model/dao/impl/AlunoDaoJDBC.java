@@ -71,6 +71,8 @@ public class AlunoDaoJDBC implements AlunoDao {
 
             stAluno.executeUpdate();
 
+            obj.setId(pessoaID);
+
             conn.commit();
         } catch (SQLException e) {
             try {
