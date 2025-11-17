@@ -47,6 +47,7 @@ public class CursoDaoJDBC implements CursoDao {
 
             if (rs.next()) {
                 int id = rs.getInt(1);
+                obj.setId(id);
             } else {
                 throw new DbException("Falha ao inserir curso, nenhum ID obtido.");
             }
