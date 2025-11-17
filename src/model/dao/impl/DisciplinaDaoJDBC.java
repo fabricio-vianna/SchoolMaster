@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import db.DB;
@@ -125,8 +126,41 @@ public class DisciplinaDaoJDBC implements DisciplinaDao {
     }
 
     @Override
-    public Disciplina findByCurso(Curso curso) {
-        return null;
+    public List<Disciplina> findByCurso(Curso curso) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        List<Disciplina> list = new ArrayList<>();
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "d.id AS disciplinaID, "
+                            + "d.nome AS disciplinaNome, "
+                            + "d.carga_horaria AS cargaHoraria, "
+                            + "d.id_professor AS professorID, "
+                            + "d.id_curso AS cursoID, "
+                            + "c.nome AS cursoNome "
+                            + "FROM disciplina d "
+                            + "INNER JOIN curso c  "
+                            + "ON d.id_curso = c.id "
+                            + "WHERE c.id = ?");
+
+            st.setInt(1, curso.getId());
+
+            rs = st.executeQuery();
+
+            while (rs.next()) {
+                list.add(instantiateDisciplina(rs));
+            }
+            return list;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar disciplina por curso: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
