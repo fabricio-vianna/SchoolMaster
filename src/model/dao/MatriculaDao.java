@@ -22,5 +22,7 @@ public interface MatriculaDao {
 
     void cancelarMatricula(Integer id);
 
+    void ativarMatricula(Integer id);
+
     List<Matricula> findAll();
 }
