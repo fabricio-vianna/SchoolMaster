@@ -49,12 +49,12 @@ public class CursoService {
         CursoDao cursoDao = DaoFactory.createCursoDao();
         cursoDao.insert(curso);
         cursosCriados.add(curso);
-        
+
         return curso;
     }
 
     public static Aluno adicionarAlunoAoCurso(Integer id, String nome, String cpf, String email, String matricula, Curso curso) {
-        Aluno aluno = new Aluno(id, nome, cpf, email, matricula, curso);
+        Aluno aluno = new Aluno(null, nome, cpf, email, matricula, curso);
         if (!curso.getListaAlunos().contains(aluno)) {
             curso.adicionarAluno(aluno);
         }
