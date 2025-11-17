@@ -3,6 +3,8 @@ package services;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.dao.DaoFactory;
+import model.dao.DisciplinaDao;
 import model.entities.Aluno;
 import model.entities.Avaliacao;
 import model.entities.Curso;
@@ -21,9 +23,14 @@ public class CursoService {
             throw new IllegalArgumentException("Curso e Professor não podem ser nulos.");
         }
 
-        Disciplina d = new Disciplina(id, nome, cargaHoraria, professor);
+        Disciplina d = new Disciplina(id, nome, cargaHoraria, professor, curso);
+
+        DisciplinaDao disciplinaDao = DaoFactory.createDisciplinaDao();
+        disciplinaDao.insert(d);
+
         curso.adicionarDisciplina(d);
         professor.atribuirDisciplina(d);
+        
         return d;
     }
 
