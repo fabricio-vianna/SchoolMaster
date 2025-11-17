@@ -237,7 +237,30 @@ public class MatriculaDaoJDBC implements MatriculaDao {
 
     @Override
     public void cancelarMatricula(Integer id) {
+        PreparedStatement st = null;
 
+        try {
+            st = conn.prepareStatement(
+                    "UPDATE matricula "
+                            + "SET ativa = ? "
+                            + "WHERE id = ?");
+
+            st.setBoolean(1, false);
+            st.setInt(2, id);
+
+            int rowsUpdated = st.executeUpdate();
+
+            if (rowsUpdated == 0) {
+                System.out.println("Nenhuma matrícula encontrada com o ID " + id);
+            } else {
+                System.out.println("Matrícula com o ID " + id + " cancelada com sucesso!");
+            }
+
+        } catch (SQLException e) {
+            throw new DbException("ERRO AO CANCELAR MATRÍCULA: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+        }
     }
 
     @Override
