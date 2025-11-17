@@ -93,7 +93,35 @@ public class DisciplinaDaoJDBC implements DisciplinaDao {
 
     @Override
     public Disciplina findById(Integer id) {
-        return null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "d.nome AS disciplinaNome, "
+                            + "d.carga_horaria AS cargaHoraria, "
+                            + "d.id_professor AS professorID, "
+                            + "d.id_curso AS cursoID "
+                            + "FROM disciplina d "
+                            + "WHERE d.id = ?");
+
+            st.setInt(1, id);
+
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                Disciplina disciplina = instantiateDisciplina(rs);
+                return disciplina;
+            }
+            return null;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar disciplina por ID: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
@@ -109,5 +137,19 @@ public class DisciplinaDaoJDBC implements DisciplinaDao {
     @Override
     public List<Professor> findAll() {
         return List.of();
+    }
+
+    private Disciplina instantiateDisciplina(ResultSet rs) throws SQLException {
+        String disciplinaNome = rs.getString("disciplinaNome");
+        int cargaHoraria = rs.getInt("cargaHoraria");
+        int professorID = rs.getInt("professorID");
+        int cursoID = rs.getInt("cursoID");
+
+        Professor professor = new ProfessorDaoJDBC(conn).findById(professorID);
+        Curso curso = new CursoDaoJDBC(conn).findById(cursoID);
+
+        Disciplina disciplina = new Disciplina(null, disciplinaNome, cargaHoraria, professor, curso);
+
+        return disciplina;
     }
 }
