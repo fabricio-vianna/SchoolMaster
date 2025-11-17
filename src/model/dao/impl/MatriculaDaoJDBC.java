@@ -165,8 +165,41 @@ public class MatriculaDaoJDBC implements MatriculaDao {
     }
 
     @Override
-    public Matricula findByCurso(Curso curso) {
-        return null;
+    public List<Matricula> findByCurso(Curso curso) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        List<Matricula> list = new ArrayList<>();
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "m.id AS matriculaID, "
+                            + "m.id_aluno, "
+                            + "m.id_curso, "
+                            + "m.data_matricula, "
+                            + "m.ativa, "
+                            + "c.id AS cursoID, "
+                            + "c.nome AS cursoNome "
+                            + "FROM matricula m "
+                            + "INNER JOIN curso c ON c.id = m.id_curso "
+                            + "WHERE c.id = ?");
+
+            st.setInt(1, curso.getId());
+
+            rs = st.executeQuery();
+
+            while (rs.next()) {
+                list.add(instantiateMatricula(rs));
+            }
+            return list;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar matricula por curso: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
