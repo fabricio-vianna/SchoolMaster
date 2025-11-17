@@ -3,6 +3,7 @@ package services;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.dao.CursoDao;
 import model.dao.DaoFactory;
 import model.dao.DisciplinaDao;
 import model.entities.Aluno;
@@ -30,7 +31,7 @@ public class CursoService {
 
         curso.adicionarDisciplina(d);
         professor.atribuirDisciplina(d);
-        
+
         return d;
     }
 
@@ -39,12 +40,16 @@ public class CursoService {
                 .anyMatch(c -> c.getId().equals(id) || c.getNome().equalsIgnoreCase(nome));
     }
 
-    public static Curso criarCurso(Integer id, String nome) {
-        if (existe(id, nome)) {
-            throw new IllegalArgumentException("Curso com esse ID ou nome já existe!");
+    public static Curso criarCurso(String nome) {
+        if (existe(null, nome)) {
+            throw new IllegalArgumentException("Curso com esse nome já existe!");
         }
-        Curso curso = new Curso(id, nome);
+
+        Curso curso = new Curso(null, nome);
+        CursoDao cursoDao = DaoFactory.createCursoDao();
+        cursoDao.insert(curso);
         cursosCriados.add(curso);
+        
         return curso;
     }
 
