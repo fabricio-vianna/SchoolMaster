@@ -3,6 +3,7 @@ package services;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.dao.AlunoDao;
 import model.dao.CursoDao;
 import model.dao.DaoFactory;
 import model.dao.DisciplinaDao;
@@ -53,11 +54,16 @@ public class CursoService {
         return curso;
     }
 
-    public static Aluno adicionarAlunoAoCurso(Integer id, String nome, String cpf, String email, String matricula, Curso curso) {
+    public static Aluno adicionarAlunoAoCurso(String nome, String cpf, String email, String matricula, Curso curso) {
         Aluno aluno = new Aluno(null, nome, cpf, email, matricula, curso);
+
         if (!curso.getListaAlunos().contains(aluno)) {
             curso.adicionarAluno(aluno);
         }
+
+        AlunoDao alunoDao = DaoFactory.createAlunoDao();
+        alunoDao.insert(aluno);
+
         return aluno;
     }
 
