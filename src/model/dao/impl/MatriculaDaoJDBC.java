@@ -242,7 +242,35 @@ public class MatriculaDaoJDBC implements MatriculaDao {
 
     @Override
     public List<Matricula> findAll() {
-        return List.of();
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "m.id AS matriculaID, "
+                            + "m.id_aluno, "
+                            + "m.id_curso, "
+                            + "m.data_matricula, "
+                            + "m.ativa "
+                            + "FROM matricula m");
+
+            rs = st.executeQuery();
+
+            List<Matricula> matriculas = new ArrayList<>();
+
+            while (rs.next()) {
+                Matricula matricula = instantiateMatricula(rs);
+                matriculas.add(matricula);
+            }
+
+            return matriculas;
+        } catch (SQLException e) {
+            throw new DbException("ERRO AO LISTAR OS MATRÍCULAS: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     private Matricula instantiateMatricula(ResultSet rs) throws SQLException {
