@@ -16,7 +16,7 @@ public interface DisciplinaDao {
 
     Disciplina findById(Integer id);
 
-    Disciplina findByCurso(Curso curso);
+    List<Disciplina> findByCurso(Curso curso);
 
     Disciplina findByProfessor(Professor professor);
 
