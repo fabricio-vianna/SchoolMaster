@@ -31,6 +31,17 @@ public class ProfessorDaoJDBC implements ProfessorDao {
         ResultSet rs = null;
 
         try {
+            try (PreparedStatement checkCpf = conn.prepareStatement(
+                    "SELECT id FROM pessoa WHERE cpf = ?")) {
+                checkCpf.setString(1, obj.getCpf());
+
+                try (ResultSet rsCheck = checkCpf.executeQuery()) {
+                    if (rsCheck.next()) {
+                        throw new DbException("CPF já cadastrado!");
+                    }
+                }
+            }
+
             conn.setAutoCommit(false);
 
             stPessoa = conn.prepareStatement(
@@ -69,6 +80,8 @@ public class ProfessorDaoJDBC implements ProfessorDao {
             stProfessor.setString(2, obj.getEspecialidade());
 
             stProfessor.executeUpdate();
+
+            obj.setId(pessoaID);
 
             conn.commit();
         } catch (SQLException e) {
