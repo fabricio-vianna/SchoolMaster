@@ -82,8 +82,8 @@ public class Avaliacao {
     public String toString() {
         return "Disciplina: " + disciplina.getNome() + "\n" +
                 "Nota: " + String.format("%.1f", nota) + "\n" +
-                "Frequência: " + frequencia + "%" +
-                "Nome do aluno: " + (aluno != null && aluno.getNome() != null ? aluno.getNome() : "Desconhecido" + "\n") +
+                "Frequência: " + frequencia + "%" + "\n" +
+                "Nome do aluno: " + (aluno != null && aluno.getNome() != null ? aluno.getNome() + "\n" : "Desconhecido" + "\n") +
                 "Matrícula: " + (aluno != null && aluno.getMatricula() != null ? aluno.getMatricula() : "Sem matrícula");
     }
 }
