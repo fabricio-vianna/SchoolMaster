@@ -20,5 +20,5 @@ public interface DisciplinaDao {
 
     Disciplina findByProfessor(Professor professor);
 
-    List<Professor> findAll();
+    List<Disciplina> findAll();
 }
