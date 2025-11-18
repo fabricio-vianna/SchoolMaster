@@ -5,7 +5,6 @@ import java.util.List;
 import model.entities.Aluno;
 import model.entities.Avaliacao;
 import model.entities.Disciplina;
-import model.entities.Professor;
 
 public interface AvaliacaoDao {
 
