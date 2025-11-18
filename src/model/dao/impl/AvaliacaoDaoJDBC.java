@@ -167,8 +167,41 @@ public class AvaliacaoDaoJDBC implements AvaliacaoDao {
     }
 
     @Override
-    public Avaliacao findByDisciplina(Disciplina disciplina) {
-        return null;
+    public List<Avaliacao> findByDisciplina(Disciplina obj) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        List<Avaliacao> list = new ArrayList<>();
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "d.id AS disciplinaID, "
+                            + "d.nome AS disciplinaNome, "
+                            + "a.id AS avaliacaoID, "
+                            + "a.id_aluno AS alunoID, "
+                            + "a.nota, "
+                            + "a.frequencia "
+                            + "FROM disciplina d "
+                            + "INNER JOIN avaliacao a  "
+                            + "ON d.id = a.id_disciplina "
+                            + "WHERE d.id = ?");
+
+            st.setInt(1, obj.getId());
+
+            rs = st.executeQuery();
+
+            while (rs.next()) {
+                list.add(instantiateAvaliacao(rs));
+            }
+            return list;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar avaliação por disciplina: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
