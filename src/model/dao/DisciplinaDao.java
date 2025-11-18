@@ -18,7 +18,7 @@ public interface DisciplinaDao {
 
     List<Disciplina> findByCurso(Curso curso);
 
-    Disciplina findByProfessor(Professor professor);
+    List<Disciplina> findByProfessor(Professor professor);
 
     List<Disciplina> findAll();
 }
