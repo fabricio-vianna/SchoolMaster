@@ -169,8 +169,36 @@ public class DisciplinaDaoJDBC implements DisciplinaDao {
     }
 
     @Override
-    public List<Professor> findAll() {
-        return List.of();
+    public List<Disciplina> findAll() {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "d.id AS disciplinaID, "
+                            + "d.nome AS disciplinaNome, "
+                            + "d.carga_horaria AS cargaHoraria, "
+                            + "d.id_professor AS professorID, "
+                            + "d.id_curso AS cursoID "
+                            + "FROM disciplina d");
+
+            rs = st.executeQuery();
+
+            List<Disciplina> disciplinas = new ArrayList<>();
+
+            while (rs.next()) {
+                Disciplina disciplina = instantiateDisciplina(rs);
+                disciplinas.add(disciplina);
+            }
+
+            return disciplinas;
+        } catch (SQLException e) {
+            throw new DbException("ERRO AO LISTAR AS DISCIPLINAS: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     private Disciplina instantiateDisciplina(ResultSet rs) throws SQLException {
