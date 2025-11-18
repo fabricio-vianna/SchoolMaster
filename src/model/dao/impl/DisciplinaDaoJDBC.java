@@ -164,8 +164,42 @@ public class DisciplinaDaoJDBC implements DisciplinaDao {
     }
 
     @Override
-    public Disciplina findByProfessor(Professor professor) {
-        return null;
+    public List<Disciplina> findByProfessor(Professor professor) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        List<Disciplina> list = new ArrayList<>();
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "p.id AS professorID, "
+                            + "p.nome AS professorNome, "
+                            + "prof.especialidade, "
+                            + "d.id AS disciplinaID, "
+                            + "d.nome AS disciplinaNome, "
+                            + "d.carga_horaria AS cargaHoraria, "
+                            + "d.id_curso AS cursoID "
+                            + "FROM pessoa p "
+                            + "INNER JOIN professor prof ON p.id = prof.id "
+                            + "INNER JOIN disciplina d ON d.id_professor = prof.id "
+                            + "WHERE prof.id = ?");
+
+            st.setInt(1, professor.getId());
+
+            rs = st.executeQuery();
+
+            while (rs.next()) {
+                list.add(instantiateDisciplina(rs));
+            }
+            return list;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar disciplina por professor: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
