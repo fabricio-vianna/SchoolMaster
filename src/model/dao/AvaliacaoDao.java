@@ -19,7 +19,7 @@ public interface AvaliacaoDao {
 
     List<Avaliacao> findByAluno(Aluno obj);
 
-    Avaliacao findByDisciplina(Disciplina disciplina);
+    List<Avaliacao> findByDisciplina(Disciplina obj);
 
     List<Professor> findAll();
 }
