@@ -64,7 +64,40 @@ public class DisciplinaDaoJDBC implements DisciplinaDao {
 
     @Override
     public void update(Disciplina obj) {
+        PreparedStatement st = null;
 
+        try {
+            conn.setAutoCommit(false);
+
+            st = conn.prepareStatement(
+                    "UPDATE disciplina " +
+                            "SET nome = ?, carga_horaria = ?, id_professor = ?, id_curso = ? " +
+                            "WHERE id = ?");
+
+            st.setString(1, obj.getNome());
+            st.setInt(2, obj.getCargaHoraria());
+            st.setInt(3, obj.getProfessor().getId());
+            st.setInt(4, obj.getCurso().getId());
+            st.setInt(5, obj.getId());
+
+            st.executeUpdate();
+
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+                throw new DbException("Transação revertida! Erro: " + e.getMessage());
+            } catch (SQLException e1) {
+                throw new RuntimeException("Erro ao tentar reverter transação! " + e1.getMessage());
+            }
+        } finally {
+            DB.closeStatement(st);
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -100,6 +133,7 @@ public class DisciplinaDaoJDBC implements DisciplinaDao {
         try {
             st = conn.prepareStatement(
                     "SELECT "
+                            + "d.id AS disciplinaID, "
                             + "d.nome AS disciplinaNome, "
                             + "d.carga_horaria AS cargaHoraria, "
                             + "d.id_professor AS professorID, "
@@ -113,6 +147,7 @@ public class DisciplinaDaoJDBC implements DisciplinaDao {
 
             if (rs.next()) {
                 Disciplina disciplina = instantiateDisciplina(rs);
+                disciplina.setId(rs.getInt("disciplinaID"));
                 return disciplina;
             }
             return null;
