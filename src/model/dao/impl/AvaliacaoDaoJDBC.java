@@ -14,7 +14,6 @@ import model.dao.AvaliacaoDao;
 import model.entities.Aluno;
 import model.entities.Avaliacao;
 import model.entities.Disciplina;
-import model.entities.Professor;
 
 public class AvaliacaoDaoJDBC implements AvaliacaoDao {
 
@@ -205,8 +204,36 @@ public class AvaliacaoDaoJDBC implements AvaliacaoDao {
     }
 
     @Override
-    public List<Professor> findAll() {
-        return List.of();
+    public List<Avaliacao> findAll() {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "a.id AS avaliacaoID, "
+                            + "a.id_aluno AS alunoID, "
+                            + "a.id_disciplina AS disciplinaID, "
+                            + "a.nota, "
+                            + "a.frequencia "
+                            + "FROM avaliacao a ");
+
+            rs = st.executeQuery();
+
+            List<Avaliacao> list = new ArrayList<>();
+
+            while (rs.next()) {
+                Avaliacao avaliacao = instantiateAvaliacao(rs);
+                list.add(avaliacao);
+            }
+
+            return list;
+        } catch (SQLException e) {
+            throw new DbException("ERRO AO LISTAR AS AVALIAÇÕES: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     private Avaliacao instantiateAvaliacao(ResultSet rs) throws SQLException {
