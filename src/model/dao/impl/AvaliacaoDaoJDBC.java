@@ -10,6 +10,7 @@ import java.util.List;
 import db.DB;
 import db.DbException;
 import model.dao.AvaliacaoDao;
+import model.entities.Aluno;
 import model.entities.Avaliacao;
 import model.entities.Disciplina;
 import model.entities.Professor;
@@ -94,7 +95,37 @@ public class AvaliacaoDaoJDBC implements AvaliacaoDao {
 
     @Override
     public Avaliacao findById(Integer id) {
-        return null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "a.id AS avaliacaoID, "
+                            + "a.id_aluno AS alunoID, "
+                            + "a.id_disciplina AS disciplinaID, "
+                            + "a.nota, "
+                            + "a.frequencia "
+                            + "FROM avaliacao a "
+                            + "WHERE id = ?");
+
+            st.setInt(1, id);
+
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                Avaliacao avaliacao = instantiateAvaliacao(rs);
+                avaliacao.setId(rs.getInt("avaliacaoID"));
+                return avaliacao;
+            }
+            return null;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar avaliação por ID: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
@@ -110,5 +141,18 @@ public class AvaliacaoDaoJDBC implements AvaliacaoDao {
     @Override
     public List<Professor> findAll() {
         return List.of();
+    }
+
+    private Avaliacao instantiateAvaliacao(ResultSet rs) throws SQLException {
+        int alunoID = rs.getInt("alunoID");
+        int disciplinaID = rs.getInt("disciplinaID");
+        double nota = rs.getDouble("nota");
+        int frequencia = rs.getInt("frequencia");
+
+        Aluno aluno = new AlunoDaoJDBC(conn).findById(alunoID);
+        Disciplina disciplina = new DisciplinaDaoJDBC(conn).findById(disciplinaID);
+
+        Avaliacao avaliacao = new Avaliacao(null, aluno, disciplina, nota, frequencia);
+        return avaliacao;
     }
 }
