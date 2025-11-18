@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import db.DB;
@@ -129,8 +130,40 @@ public class AvaliacaoDaoJDBC implements AvaliacaoDao {
     }
 
     @Override
-    public Avaliacao findByAluno(Avaliacao aluno) {
-        return null;
+    public List<Avaliacao> findByAluno(Aluno obj) {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        List<Avaliacao> list = new ArrayList<>();
+
+        try {
+            st = conn.prepareStatement(
+                    "SELECT "
+                            + "a.id_aluno AS alunoID, "
+                            + "p.nome AS alunoNome, "
+                            + "a.id AS avaliacaoID, "
+                            + "a.id_disciplina AS disciplinaID, "
+                            + "a.nota, "
+                            + "a.frequencia "
+                            + "FROM avaliacao a "
+                            + "INNER JOIN pessoa p ON p.id = a.id_aluno "
+                            + "WHERE p.id = ?");
+
+            st.setInt(1, obj.getId());
+
+            rs = st.executeQuery();
+
+            while (rs.next()) {
+                list.add(instantiateAvaliacao(rs));
+            }
+            return list;
+
+        } catch (SQLException e) {
+            throw new DbException("Erro ao buscar disciplina por curso: " + e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
