@@ -49,7 +49,7 @@ public class DisciplinaDaoJDBC implements DisciplinaDao {
             rs = st.getGeneratedKeys();
 
             if (rs.next()) {
-                int id = rs.getInt(1);
+                obj.setId(rs.getInt(1));
             } else {
                 throw new DbException("Falha ao inserir disciplina, nenhum ID obtido.");
             }

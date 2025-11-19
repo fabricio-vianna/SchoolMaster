@@ -50,7 +50,7 @@ public class AvaliacaoDaoJDBC implements AvaliacaoDao {
             rs = st.getGeneratedKeys();
 
             if (rs.next()) {
-                int id = rs.getInt(1);
+                obj.setId(rs.getInt(1));
             } else {
                 throw new DbException("Falha ao inserir avaliação, nenhum ID obtido.");
             }
