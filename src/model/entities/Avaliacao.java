@@ -54,8 +54,16 @@ public class Avaliacao {
         return nota;
     }
 
+    public void setNota(Double nota) {
+        this.nota = nota;
+    }
+
     public Integer getFrequencia() {
         return frequencia;
+    }
+
+    public void setFrequencia(Integer frequencia) {
+        this.frequencia = frequencia;
     }
 
     public void registrarNota(Double nota) {
