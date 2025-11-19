@@ -35,14 +35,15 @@ public class AlunoDaoJDBC implements AlunoDao {
 
             stPessoa = conn.prepareStatement(
                     "INSERT INTO pessoa "
-                            + "(nome, cpf, email) "
+                            + "(nome, cpf, email, tipo) "
                             + "VALUES "
-                            + "(?, ?, ?)",
+                            + "(?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS);
 
             stPessoa.setString(1, obj.getNome());
             stPessoa.setString(2, obj.getCpf());
             stPessoa.setString(3, obj.getEmail());
+            stPessoa.setString(4, "ALUNO");
 
             int rowsAffected = stPessoa.executeUpdate();
 

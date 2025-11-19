@@ -31,29 +31,20 @@ public class ProfessorDaoJDBC implements ProfessorDao {
         ResultSet rs = null;
 
         try {
-            try (PreparedStatement checkCpf = conn.prepareStatement(
-                    "SELECT id FROM pessoa WHERE cpf = ?")) {
-                checkCpf.setString(1, obj.getCpf());
-
-                try (ResultSet rsCheck = checkCpf.executeQuery()) {
-                    if (rsCheck.next()) {
-                        throw new DbException("CPF já cadastrado!");
-                    }
-                }
-            }
 
             conn.setAutoCommit(false);
 
             stPessoa = conn.prepareStatement(
                     "INSERT INTO pessoa "
-                            + "(nome, cpf, email) "
+                            + "(nome, cpf, email, tipo) "
                             + "VALUES "
-                            + "(?, ?, ?)",
+                            + "(?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS);
 
             stPessoa.setString(1, obj.getNome());
             stPessoa.setString(2, obj.getCpf());
             stPessoa.setString(3, obj.getEmail());
+            stPessoa.setString(4, "PROFESSOR");
 
             int rowsAffected = stPessoa.executeUpdate();
 
