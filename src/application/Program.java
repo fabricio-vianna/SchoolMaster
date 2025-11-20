@@ -1,14 +1,13 @@
 package application;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-import model.entities.Aluno;
-import model.entities.Avaliacao;
-import model.entities.Curso;
-import model.entities.Disciplina;
-import model.entities.Professor;
+import model.dao.*;
+import model.entities.*;
 import services.CursoService;
+import static services.CursoService.adicionarProfessorAoCurso;
 
 public class Program {
 
@@ -17,10 +16,22 @@ public class Program {
         Locale.setDefault(Locale.US);
         Scanner sc = new Scanner(System.in);
 
+        AlunoDao alunoDao = DaoFactory.createAlunoDao();
+        AvaliacaoDao avaliacaoDao = DaoFactory.createAvaliacaoDao();
+        CursoDao cursoDao = DaoFactory.createCursoDao();
+        DisciplinaDao disciplinaDao = DaoFactory.createDisciplinaDao();
+        MatriculaDao matriculaDao = DaoFactory.createMatriculaDao();
+        ProfessorDao professorDao = DaoFactory.createProfessorDao();
+
+        // Se precisar testar o banco, descomente a linha abaixo:
+        // testarBancoDeDados(alunoDao, avaliacaoDao, cursoDao, disciplinaDao, matriculaDao, professorDao);
+
+        System.out.println("=== SISTEMA DE GESTÃO ACADÊMICA ===");
+
         System.out.print("Digite o nome do curso 1: ");
         String nomeCurso = sc.nextLine();
 
-        Curso cursoOne = CursoService.criarCurso(1, nomeCurso);
+        Curso curso = CursoService.criarCurso(nomeCurso);
 
         System.out.println("\nDigite os dados do Professor 1:");
         System.out.print("Nome: ");
@@ -35,7 +46,7 @@ public class Program {
         System.out.print("Especialidade: ");
         String esplProfessor = sc.nextLine();
 
-        Professor professorOne = CursoService.adicionarProfessorAoCurso(1, nomeProfessor, cpfProfessor, emailProfessor, esplProfessor, cursoOne);
+        Professor professor = adicionarProfessorAoCurso(nomeProfessor, cpfProfessor, emailProfessor, esplProfessor, curso);
 
         System.out.println("\nDigite os dados da Disciplina 1: ");
         System.out.print("Nome da disciplina: ");
@@ -45,7 +56,7 @@ public class Program {
         int hrDisciplina = sc.nextInt();
         sc.nextLine();
 
-        Disciplina disciplinaOne = CursoService.adicionarDisciplinaAoCurso(1, nomeDisciplina, hrDisciplina, professorOne, cursoOne);
+        Disciplina disciplinaOne = CursoService.adicionarDisciplinaAoCurso(1, nomeDisciplina, hrDisciplina, professor, curso);
 
         System.out.println("\nDigite os dados do Aluno 1:");
         System.out.print("Nome: ");
@@ -57,10 +68,10 @@ public class Program {
         System.out.print("Email: ");
         String emailAluno = sc.nextLine();
 
-        System.out.print("matrícula: ");
+        System.out.print("Matrícula: ");
         String mtlAluno = sc.nextLine();
 
-        Aluno alunoOne = CursoService.adicionarAlunoAoCurso(1, nomeAluno, cpfAluno, emailAluno, mtlAluno, cursoOne);
+        Aluno alunoOne = CursoService.adicionarAlunoAoCurso(nomeAluno, cpfAluno, emailAluno, mtlAluno, curso);
 
         System.out.println("\nDigite a avaliação do aluno:");
         double notaAluno;
@@ -73,18 +84,18 @@ public class Program {
         do {
             System.out.print("Frequência (% de 0 a 100): ");
             frqcAluno = sc.nextInt();
-        } while (frqcAluno <= 0 && frqcAluno >= 100);
+        } while (frqcAluno < 0 || frqcAluno > 100);
         sc.nextLine();
 
-        Avaliacao avaliacaoOne = CursoService.registrarAvaliacao(1, alunoOne, disciplinaOne, notaAluno, frqcAluno);
+        Avaliacao avaliacao = CursoService.registrarAvaliacao(1, alunoOne, disciplinaOne, notaAluno, frqcAluno);
 
-        System.out.println("\nCurso: " + cursoOne.getNome());
+        System.out.println("\nCurso: " + curso.getNome());
         System.out.println("--------------------------------------------------");
 
-        System.out.println("Professor: " + professorOne.getNome());
-        System.out.println("CPF: " + professorOne.getCpf());
-        System.out.println("Email: " + professorOne.getEmail());
-        System.out.println("Especialidade: " + professorOne.getEspecialidade());
+        System.out.println("Professor: " + professor.getNome());
+        System.out.println("CPF: " + professor.getCpf());
+        System.out.println("Email: " + professor.getEmail());
+        System.out.println("Especialidade: " + professor.getEspecialidade());
         System.out.println("--------------------------------------------------");
 
         System.out.println("Disciplina: " + disciplinaOne.getNome());
@@ -101,18 +112,97 @@ public class Program {
 
         System.out.println("--------------------------------------------------");
 
-        System.out.println("\nAlunos matriculados no curso " + cursoOne.getNome() + ":");
-        for (Aluno aluno : cursoOne.getListaAlunos()) {
-            System.out.println("ID: " + aluno.getId() + " | Nome: " + aluno.getNome() + " | Matrícula: " + aluno.getMatricula());
+        System.out.println("\nAlunos matriculados no curso " + curso.getNome() + ":");
+        if (curso.getListaAlunos() != null) {
+            for (Aluno alunoMatriculas : curso.getListaAlunos()) {
+                System.out.println("ID: " + alunoMatriculas.getId() + " | Nome: " + alunoMatriculas.getNome() + " | Matrícula: " + alunoMatriculas.getMatricula());
+            }
         }
         System.out.println("--------------------------------------------------");
 
-        System.out.println("\nDisciplinas do curso " + cursoOne.getNome() + ":");
-        for (Disciplina disciplina : cursoOne.getListaDisciplinas()) {
-            System.out.println("Disciplina: " + disciplina.getNome() + " | Carga Horária: " + disciplina.getCargaHoraria() + " horas");
+        System.out.println("\nDisciplinas do curso " + curso.getNome() + ":");
+        if (curso.getListaDisciplinas() != null) {
+            for (Disciplina disciplina1 : curso.getListaDisciplinas()) {
+                System.out.println("Disciplina: " + disciplina1.getNome() + " | Carga Horária: " + disciplina1.getCargaHoraria() + " horas");
+            }
         }
         System.out.println("--------------------------------------------------");
 
         sc.close();
+    }
+
+    // testarBancoDeDados(alunoDao, avaliacaoDao, cursoDao, disciplinaDao, matriculaDao, professorDao);
+
+    private static void testarBancoDeDados(AlunoDao alunoDao, AvaliacaoDao avaliacaoDao,
+                                           CursoDao cursoDao, DisciplinaDao disciplinaDao,
+                                           MatriculaDao matriculaDao, ProfessorDao professorDao) {
+
+        Avaliacao avaliacao = avaliacaoDao.findById(3);
+        if (avaliacao != null) {
+            avaliacao.setFrequencia(75);
+            avaliacaoDao.update(avaliacao);
+            System.out.println("ATUALIZADO COM SUCESSO!");
+        }
+
+        List<Avaliacao> avaliacoes = avaliacaoDao.findAll();
+        for (Avaliacao a : avaliacoes) {
+            System.out.println(a);
+        }
+
+        Disciplina disciplina = disciplinaDao.findById(2);
+        if (disciplina != null) {
+            avaliacoes = avaliacaoDao.findByDisciplina(disciplina);
+            for (Avaliacao a : avaliacoes) {
+                System.out.println(a);
+            }
+        }
+
+        Aluno aluno = alunoDao.findById(2);
+        if (aluno != null) {
+            avaliacoes = avaliacaoDao.findByAluno(aluno);
+            for (Avaliacao a : avaliacoes) {
+                System.out.println(a);
+            }
+        }
+
+        if (aluno != null && disciplina != null) {
+            avaliacao = new Avaliacao(null, aluno, disciplina, 7.5, 75);
+            avaliacaoDao.insert(avaliacao);
+        }
+
+        disciplina = disciplinaDao.findById(4);
+        if (disciplina != null) {
+            disciplina.setNome("Segurança de Dados");
+            disciplinaDao.update(disciplina);
+        }
+
+        Professor professor = professorDao.findById(4);
+        if (professor != null) {
+            List<Disciplina> disciplinas = disciplinaDao.findByProfessor(professor);
+            for (Disciplina d : disciplinas) {
+                System.out.println(d);
+            }
+        }
+
+        List<Disciplina> todasDisciplinas = disciplinaDao.findAll();
+        for (Disciplina d : todasDisciplinas) {
+            System.out.println(d);
+        }
+
+        Curso curso = cursoDao.findById(1);
+        if (curso != null) {
+            Professor prof = adicionarProfessorAoCurso("Ana Silva", "98765432200", "ana@email.com", "Redes de Computadores", curso);
+            System.out.println("Professor inserido com ID: " + prof.getId());
+        }
+
+        List<Matricula> matriculas = matriculaDao.findAll();
+        for (Matricula m : matriculas) {
+            System.out.println(m);
+        }
+
+        List<Professor> professores = professorDao.findByEspecialidade("Python");
+        for (Professor p : professores) {
+            System.out.println(p);
+        }
     }
 }
