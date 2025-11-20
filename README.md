@@ -1,149 +1,151 @@
-# Sistema de Gestão Acadêmica
+# SchoolMaster 🎓
 
-Este projeto simula um sistema de gestão acadêmica para cursos, permitindo o cadastro e acompanhamento de Cursos, Disciplinas, Alunos, Professores e Avaliações. O sistema oferece funcionalidades como o registro de dados acadêmicos, geração de boletins de alunos, controle de matrículas e avaliações de disciplinas.
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)
+![JDBC](https://img.shields.io/badge/JDBC-DAO_Pattern-4EA94B?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
-## Funcionalidades
+O **SchoolMaster** é um sistema de gestão acadêmica robusto desenvolvido em Java. O projeto simula o gerenciamento de
+uma instituição de ensino, utilizando uma arquitetura profissional com **JDBC (Java Database Connectivity)** e o padrão
+de projeto **DAO (Data Access Object)** para persistência de dados em banco **MySQL**.
 
-- **Cadastro de Curso**: Permite criar um curso e adicionar disciplinas, professores e alunos.
-- **Cadastro de Professor**: Professores podem ser cadastrados e atribuídos a disciplinas.
-- **Cadastro de Aluno**: Alunos podem se matricular em cursos e realizar avaliações nas disciplinas.
-- **Avaliações**: Alunos recebem avaliações nas disciplinas, com notas e frequências registradas.
-- **Boletim**: O sistema gera o boletim do aluno com suas notas e frequências.
-- **Matrícula**: O sistema permite confirmar ou cancelar a matrícula de um aluno em um curso.
+O sistema permite o cadastro e acompanhamento completo de Cursos, Disciplinas, Alunos, Professores e Avaliações,
+incluindo a geração de boletins e relatórios de matrícula.
 
-## Estrutura do Projeto
+## 🚀 Funcionalidades
 
-O projeto é composto por 9 classes principais:
+* **Cadastro de Curso:** Criação de cursos e gerenciamento de grades curriculares.
+* **Gestão de Pessoas:**
+    * **Professores:** Cadastro com especialidades e atribuição a disciplinas.
+    * **Alunos:** Matrícula em cursos e histórico acadêmico.
+* **Gestão Acadêmica:**
+    * **Disciplinas:** Controle de carga horária e corpo docente.
+    * **Matrículas:** Sistema para ativar, cancelar ou trancar matrículas.
+* **Sistema de Avaliação:** Registro de notas e frequências com cálculo automático de desempenho.
+* **Relatórios:** Geração de boletim escolar detalhado via console.
 
-### Pessoa (Classe abstrata)
-Classe base para Aluno e Professor, contendo informações comuns como id, nome, cpf, e email.
+## 📂 Estrutura do Projeto
 
-### Aluno
-Representa um aluno, com informações como matrícula e o curso no qual está matriculado. Permite consultar o boletim do aluno com suas avaliações.
+O projeto segue uma arquitetura em camadas para garantir a separação de responsabilidades e facilidade de manutenção:
 
-### Professor
-Representa um professor, com especialidade e disciplinas atribuídas.
+```text
+SchoolMaster/
+├── src/
+│   ├── application/       # Ponto de entrada (Program.java) e interação com usuário
+│   ├── db/                # Gerenciamento de conexão JDBC e Properties
+│   ├── model/
+│   │   ├── dao/           # Interfaces (contratos) e Factory do padrão DAO
+│   │   │   └── impl/      # Implementação concreta dos DAOs (SQL/JDBC)
+│   │   └── entities/      # Classes de domínio (POJOs)
+│   └── services/          # Regras de negócio e orquestração de serviços
+├── .gitignore             # Arquivos ignorados pelo Git
+├── db.properties          # Configuração de credenciais do Banco de Dados
+└── README.md              # Documentação do projeto
+Entidades Principais
+Pessoa (Abstrata): Classe base para Aluno e Professor.
 
-### Disciplina
-Representa uma disciplina de um curso, com informações sobre carga horária e avaliações associadas.
+Aluno: Vinculado a uma matrícula, possui histórico de avaliações.
 
-### Curso
-Representa um curso, contendo informações sobre o nome, disciplinas, alunos e professores associados.
+Professor: Especialista responsável por lecionar disciplinas.
 
-### Avaliacao
-Representa a avaliação de um aluno em uma disciplina, com nota e frequência.
+Curso: Entidade agregadora de disciplinas e alunos.
 
-### Matricula
-Representa a matrícula de um aluno em um curso, com a possibilidade de confirmar ou cancelar a matrícula.
+Disciplina: Matéria específica com carga horária definida.
 
-### CursoService
-Serviço responsável por realizar operações como criação de cursos, cadastro de professores, alunos e disciplinas, e registro de avaliações.
+Avaliacao: Registro de nota (0-10) e frequência (%) de um aluno.
 
-### Program
-Classe de execução principal que integra as funcionalidades do sistema, realizando o fluxo de cadastro de curso, professor, aluno e avaliação.
+Matricula: Vínculo associativo entre Aluno e Curso.
 
-## Diagrama das Entidades
+🗄️ Diagrama de Entidades
+O modelo de dados relacional segue a seguinte estrutura lógica:
 
-O sistema é composto pelas seguintes entidades principais:
+Snippet de código
 
-- **Curso** → contém Disciplinas, Alunos, Professores
-- **Aluno** → possui Avaliações em Disciplinas
-- **Professor** → leciona Disciplinas
-- **Disciplina** → contém Avaliações e é lecionada por um Professor
+graph TD;
+    Curso -->|contém| Disciplina
+    Curso -->|tem| Aluno
+    Curso -->|tem| Professor
+    Professor -->|leciona| Disciplina
+    Aluno -->|possui| Avaliacao
+    Disciplina -->|gera| Avaliacao
+(Visualização simplificada: Curso 1:N Disciplinas/Alunos | Professor 1:N Disciplinas | Aluno 1:N Avaliações)
 
-## Requisitos
+🛠️ Tecnologias & Requisitos
+Java JDK 8+
 
-- Java 8 ou superior.
+MySQL Server (8.0 ou superior recomendado)
 
-## Como rodar o projeto
+JDBC Driver (MySQL Connector/J)
 
-Clone este repositório:
+Maven ou Gradle (Opcional para gerenciamento de dependências)
 
-```bash
-git clone https://github.com/fabricio-vianna/SchoolMaster.git
-```
+🔧 Instalação e Execução
+1. Clone o Repositório
+Bash
 
-Compile o projeto utilizando o Maven ou Gradle (dependendo de sua preferência) ou diretamente via javac:
+git clone [https://github.com/fabricio-vianna/SchoolMaster.git](https://github.com/fabricio-vianna/SchoolMaster.git)
+cd SchoolMaster
+2. Configuração do Banco de Dados
+Crie um arquivo chamado db.properties na raiz do projeto (se não houver) com as suas credenciais locais do MySQL:
 
-```bash
-javac application/Program.java
-```
+Properties
 
-Execute o programa:
+dburl=jdbc:mysql://localhost:3306/schoolmaster?useSSL=false
+user=seu_usuario_mysql
+password=sua_senha_mysql
+Nota: Certifique-se de criar o schema schoolmaster no seu banco de dados antes de rodar.
 
-```bash
-java application.Program
-```
+3. Compilação e Execução
+Você pode executar via IDE (IntelliJ/Eclipse) ou via terminal:
 
-Siga as instruções no console para cadastrar cursos, professores, alunos e realizar avaliações.
+Bash
 
-## Exemplo de Execução
+# Compilar
+javac -cp .:mysql-connector.jar application/Program.java
 
-Durante a execução do programa, o sistema irá solicitar as seguintes entradas:
+# Executar
+java -cp .:mysql-connector.jar application.Program
+🖥️ Exemplo de Uso
+Ao iniciar a aplicação, siga as instruções interativas no console:
 
-- Nome do curso
-- Dados do professor (nome, CPF, e-mail, especialidade)
-- Dados da disciplina (nome, carga horária)
-- Dados do aluno (nome, CPF, matrícula)
-- Avaliação do aluno (nota e frequência)
+Plaintext
 
-Após isso, o sistema exibirá um boletim com as avaliações e frequências registradas para o aluno, além de listar todos os alunos e disciplinas do curso.
-
-### Exemplo de saída:
-```
+=== SISTEMA DE GESTÃO ACADÊMICA ===
 Digite o nome do curso 1: Engenharia de Software
 
 Digite os dados do Professor 1:
 Nome: Prof. João Silva
-CPF: 12345678900
-Email: joao.silva@university.com
-Especialidade: Programação
+CPF: 123.456.789-00
+Email: joao@university.com
+Especialidade: Java Back-end
 
-Digite os dados da Disciplina 1:
-Nome da disciplina: Algoritmos
-Carga horária (em horas): 60
-
-Digite os dados do Aluno 1:
-Nome: Maria Oliveira
-CPF: 98765432100
-Email: maria.oliveira@student.com
-Matrícula: 2023456
+... [Entrada de dados do Aluno e Disciplina] ...
 
 Digite a avaliação do aluno:
-Nota (de 0 a 10): 8.5
-Frequência (% de 0 a 100): 90
+Nota (de 0 a 10): 9.5
+Frequência (% de 0 a 100): 100
 
-Curso: Engenharia de Software
---------------------------------------------------
-Professor: Prof. João Silva
-CPF: 12345678900
-Email: joao.silva@university.com
-Especialidade: Programação
---------------------------------------------------
-Disciplina: Algoritmos
-Carga Horária: 60 horas
---------------------------------------------------
-Aluno: Maria Oliveira
-CPF: 98765432100
-Email: maria.oliveira@student.com
-Matrícula: 2023456
 --------------------------------------------------
 Boletim de Maria Oliveira
 Matrícula: 2023456
 --------------------------------------------------
-Disciplina: Algoritmos
-Carga Horária: 60 horas
-Nota: 8.5
-Frequência: 90%
+Disciplina: Java Back-end
+Carga Horária: 80 horas
+Nota: 9.5
+Frequência: 100%
 --------------------------------------------------
-Alunos matriculados no curso Engenharia de Software:
-ID: 1 | Nome: Maria Oliveira | Matrícula: 2023456
---------------------------------------------------
-Disciplinas do curso Engenharia de Software:
-Disciplina: Algoritmos | Carga Horária: 60 horas
---------------------------------------------------
-```
+🤝 Contribuições
+Contribuições são bem-vindas!
 
-## Contribuições
+Faça um Fork do projeto.
 
-Se você quiser contribuir para o projeto, fique à vontade! Abra uma issue ou um pull request para sugerir melhorias ou corrigir problemas.
+Crie uma Branch para sua feature (git checkout -b feature/NovaFeature).
+
+Faça o Commit (git commit -m 'Adicionando nova feature').
+
+Faça o Push (git push origin feature/NovaFeature).
+
+Abra um Pull Request.
+
+📄 Licença
+Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
